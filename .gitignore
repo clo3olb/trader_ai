@@ -4,3 +4,7 @@ vm_key.pub
 *.pub
 
 trader_ai
+
+# python
+*.pyc
+
