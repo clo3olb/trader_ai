@@ -11,3 +11,5 @@ trader_ai
 # mac
 .DS_Store
 
+# .log
+*.log
