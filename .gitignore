@@ -8,3 +8,6 @@ trader_ai
 # python
 *.pyc
 
+# mac
+.DS_Store
+
