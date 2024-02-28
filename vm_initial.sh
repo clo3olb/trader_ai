@@ -10,7 +10,7 @@ git clone https://github.com/clo3olb/trader_ai.git
 # Python Setting
 # Note that python is already installed
 # install venv
-apt install python3.11-venv
+sudo apt install python3.11-venv
 python3 -m venv trader_ai
 
 # To activate python venv
