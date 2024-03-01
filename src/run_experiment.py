@@ -146,7 +146,16 @@ if __name__ == '__main__':
     torch.manual_seed(fix_seed)
     np.random.seed(fix_seed)
 
+    # set gpu
+    if not torch.cuda.is_available(): 
+        # error
+        print('GPU is not available')
+        
+        # exit
+        exit()
+
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
+    
 
     if args.use_gpu and args.use_multi_gpu:
         args.dvices = args.devices.replace(' ', '')
