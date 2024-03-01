@@ -13,6 +13,8 @@ bin
 lib
 lib64
 pyvenv.cfg
+include
+checkpoints
 
 # mac
 .DS_Store
