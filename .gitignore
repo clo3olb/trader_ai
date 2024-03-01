@@ -8,6 +8,12 @@ trader_ai
 # python
 *.pyc
 
+# python venv
+bin
+lib
+lib64
+pyvenv.cfg
+
 # mac
 .DS_Store
 
