@@ -15,6 +15,7 @@ python3 -m venv trader_ai
 
 # To activate python venv
 source trader_ai/bin/activate
+pip install -r requirements.txt
 
 # To deactivate python venv
 deactivate
