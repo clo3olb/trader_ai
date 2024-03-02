@@ -27,7 +27,7 @@ if args.use_gpu and args.use_multi_gpu:
     args.device_ids = [int(id_) for id_ in device_ids]
     args.gpu = args.device_ids[0]
 
-print('Args in Trainning:')
+print('Args in Prediction:')
 print(args)
 
 Exp = Exp_Main
