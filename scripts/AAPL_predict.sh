@@ -2,8 +2,8 @@ if [ ! -d "./src/logs" ]; then
     mkdir ./src/logs
 fi
 
-if [ ! -d "./src/logs/LongForecasting" ]; then
-    mkdir ./src/logs/LongForecasting
+if [ ! -d "./src/logs/prediction" ]; then
+    mkdir ./src/logs/prediction
 fi
 seq_len=336
 model_name=PatchTST
@@ -43,5 +43,5 @@ do
       --patience 20\
       --itr 1\
       --checkpoints ./src/checkpoints/\
-      --batch_size 256 --learning_rate 0.0001 >src/logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
+      --batch_size 256 --learning_rate 0.0001 >src/logs/prediction/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
 done

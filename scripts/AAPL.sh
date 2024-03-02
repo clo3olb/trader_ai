@@ -15,7 +15,7 @@ data_name=custom
 
 random_seed=2021
 # for pred_len in 96 192 336 720
-for pred_len in 48
+for pred_len in 96
 do
     python -u src/run_experiment.py \
       --random_seed $random_seed \
