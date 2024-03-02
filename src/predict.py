@@ -50,6 +50,7 @@ setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_
     args.embed,
     args.distil,
     args.des,
+    0
 )
 
 exp = Exp(args)  # set experiments
