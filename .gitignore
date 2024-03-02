@@ -1,5 +1,5 @@
-vm_key
-vm_key.pub
+vm_key_gcp
+vm_key_gcp.pub
 
 *.pub
 
