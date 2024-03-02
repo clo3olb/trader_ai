@@ -14,7 +14,9 @@ lib
 lib64
 pyvenv.cfg
 include
-checkpoints
+
+# model weights
+# checkpoints
 
 # mac
 .DS_Store
