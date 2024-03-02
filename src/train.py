@@ -1,7 +1,7 @@
 import argparse
 import os
 import torch
-from exp.exp import Exp
+from exp.exp_main import Exp_Main
 import random
 import numpy as np
 
@@ -22,6 +22,8 @@ if __name__ == '__main__':
                         help='model name, options: [Autoformer, Informer, Transformer]')
 
     # data loader
+    parser.add_argument('--data', type=str, required=True,
+                        default='ETTm1', help='dataset type')
     parser.add_argument('--root_path', type=str,
                         default='./data/ETT/', help='root path of the data file')
     parser.add_argument('--data_path', type=str,
@@ -163,7 +165,7 @@ if __name__ == '__main__':
     print('Args in experiment:')
     print(args)
 
-    Exp = Exp
+    Exp = Exp_Main
 
     if args.is_training:
         for ii in range(args.itr):
