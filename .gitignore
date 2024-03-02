@@ -22,4 +22,4 @@ include
 .DS_Store
 
 # .log
-*.log
+# *.log
