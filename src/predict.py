@@ -1,12 +1,15 @@
 import argparse
 import os
-from parseArgs import parseArgs
+from args import loadArgs
 import torch
 from exp.exp_main import Exp_Main
 import random
 import numpy as np
 
-args = parseArgs()
+setting = 'AAPL_336_48_PatchTST_custom_ftM_sl336_ll48_pl48_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0'
+
+# load args
+args = loadArgs('./checkpoints/{}/args.pkl'.format(setting))
 
 # random seed
 fix_seed = args.random_seed
@@ -31,27 +34,6 @@ print('Args in Prediction:')
 print(args)
 
 Exp = Exp_Main
-
-# setting record of experiments
-setting = '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}'.format(
-    args.model_id,
-    args.model,
-    args.data,
-    args.features,
-    args.seq_len,
-    args.label_len,
-    args.pred_len,
-    args.d_model,
-    args.n_heads,
-    args.e_layers,
-    args.d_layers,
-    args.d_ff,
-    args.factor,
-    args.embed,
-    args.distil,
-    args.des,
-    0
-)
 
 exp = Exp(args)  # set experiments
 print(
