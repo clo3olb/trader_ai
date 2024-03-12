@@ -17,5 +17,5 @@ pip freeze > requirements.txt
 
 # Run Script for predictions model
 ```bash
-sh ./src/scripts/AAPL.sh
+sh ./scripts/AAPL.sh
 ```
