@@ -10,7 +10,7 @@ import numpy as np
 def predict(setting: str):
 
     # load args
-    args = loadArgs('./checkpoints/{}/args.pkl'.format(setting))
+    args = loadArgs(setting)
 
     # random seed
     fix_seed = args.random_seed

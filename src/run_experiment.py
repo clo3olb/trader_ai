@@ -63,8 +63,7 @@ if args.is_training:
         exp.test(setting)
 
         # save args
-        argsPath = getArgsPath(setting)
-        saveArgs(argsPath, args)
+        saveArgs(setting, args)
 
         if args.do_predict:
             print(
