@@ -307,14 +307,14 @@ class Exp_Main(Exp_Basic):
 
                 preds.append(pred)
                 trues.append(true)
+                
                 inputx.append(batch_x.detach().cpu().numpy())
-                if i % 2 == 0:
-                    input = batch_x.detach().cpu().numpy()
-                    gt = np.concatenate(
-                        (input[0, :, -1], true[0, :, -1]), axis=0)
-                    pd = np.concatenate(
-                        (input[0, :, -1], pred[0, :, -1]), axis=0)
-                    visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
+                input = batch_x.detach().cpu().numpy()
+                gt = np.concatenate(
+                    (input[0, :, -1], true[0, :, -1]), axis=0)
+                pd = np.concatenate(
+                    (input[0, :, -1], pred[0, :, -1]), axis=0)
+                visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
 
         if self.args.test_flop:
             test_params_flop((batch_x.shape[1], batch_x.shape[2]))
@@ -398,6 +398,10 @@ class Exp_Main(Exp_Basic):
                 preds.append(pred)
 
         preds = np.array(preds)
+
+        # for every pred inverse transform
+        preds = [pred_loader.inverse_transform(pred) for pred in preds]
+
         preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
 
         # result save
