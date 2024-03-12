@@ -31,17 +31,16 @@ def predict(setting: str):
         args.device_ids = [int(id_) for id_ in device_ids]
         args.gpu = args.device_ids[0]
 
-    print('Args in Prediction:')
-    print(args)
-
     Exp = Exp_Main
 
     exp = Exp(args)  # set experiments
     print(
         '>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-    exp.predict(setting, True)
+    preds = exp.predict(setting, True)
 
     torch.cuda.empty_cache()
+
+    return preds
 
 
 setting = 'AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0'

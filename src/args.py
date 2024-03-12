@@ -20,7 +20,7 @@ def createSetting(args, ii: int) -> str:
                                                                                                   args.des, ii)
 
 def getArgsPath(setting: str):
-    return './checkpoints/{}/args.pkl'.format(setting)
+    return './src/checkpoints/{}/args.pkl'.format(setting)
 
 
 def saveArgs(setting: str, args):
@@ -31,6 +31,7 @@ def saveArgs(setting: str, args):
 def loadArgs(setting: str):
     with open(getArgsPath(setting), 'rb') as f:
         args = pickle.load(f)
+        return args
 
 
 def parseArgs():
