@@ -33,6 +33,10 @@ def predict(setting: str):
 
     Exp = Exp_Main
 
+    # change data path to the one to predict
+    args.data_path = "AAPL_pred.csv"
+    args.date_header = 'Timestamp'
+
     exp = Exp(args)  # set experiments
     print(
         '>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
