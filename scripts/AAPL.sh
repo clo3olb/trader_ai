@@ -9,6 +9,7 @@ seq_len=336
 model_name=PatchTST
 
 root_path_name=./src/dataset/
+checkpoint_path_name=./src/checkpoints/
 data_path_name=AAPL.csv
 model_id_name=AAPL
 data_name=custom
@@ -43,6 +44,6 @@ do
       --train_epochs 100\
       --patience 20\
       --itr 1\
-      --checkpoints ./src/checkpoints/\
+      --checkpoints $checkpoint_path_name \
       --batch_size 256 --learning_rate 0.0001 >src/logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
 done
