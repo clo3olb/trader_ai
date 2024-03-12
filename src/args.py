@@ -1,4 +1,19 @@
 import argparse
+import pickle
+
+
+def getArgsPath(setting: str):
+    return './checkpoints/{}/args.pkl'.format(setting)
+
+
+def saveArgs(path: str, args):
+    with open(path, 'wb') as f:
+        pickle.dump(args, f)
+
+
+def loadArgs(path: str):
+    with open(path, 'rb') as f:
+        args = pickle.load(f)
 
 
 def parseArgs():
