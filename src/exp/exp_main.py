@@ -341,6 +341,15 @@ class Exp_Main(Exp_Basic):
         f.write('\n')
         f.close()
 
+        print('Shapes of the variables:')
+        print('mae:', np.shape(mae))
+        print('mse:', np.shape(mse))
+        print('rmse:', np.shape(rmse))
+        print('mape:', np.shape(mape))
+        print('mspe:', np.shape(mspe))
+        print('rse:', np.shape(rse))
+        print('corr:', np.shape(corr))
+
         np.save(folder_path + 'metrics.npy',
                 np.array([mae, mse, rmse, mape, mspe, rse, corr]))
         np.save(folder_path + 'pred.npy', preds)
