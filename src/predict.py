@@ -44,6 +44,6 @@ def predict(setting: str):
     torch.cuda.empty_cache()
 
 
-setting = 'AAPL_336_48_PatchTST_custom_ftM_sl336_ll48_pl48_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0'
+setting = 'AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0'
 preds = predict(setting)
 print(preds)
