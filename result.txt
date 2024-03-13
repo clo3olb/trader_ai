@@ -70,3 +70,15 @@ mse:13.771692276000977, mae:2.241657257080078, rse:0.18017713725566864
 AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
 mse:664870466879488.0, mae:8610823.0, rse:0.4613327085971832
 
+AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
+mse:667707695431680.0, mae:8638886.0, rse:0.46231600642204285
+
+AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
+mse:667707695431680.0, mae:8638886.0, rse:0.46231600642204285
+
+AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
+mse:667707695431680.0, mae:8638886.0, rse:0.46231600642204285
+
+AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
+mse:667707695431680.0, mae:8638886.0, rse:0.46231600642204285
+
