@@ -45,10 +45,10 @@ def calculate_differences_in_percentage(csv_file):
     return differences
 
 # Example usage
-csv_file = './src/dataset/AAPL.csv'
+csv_file = './predictor/dataset/AAPL.csv'
 differences_df = calculate_differences(csv_file)
 differences_df_percentage = calculate_differences_in_percentage(csv_file)
 
 # Save the differences DataFrame to a new CSV file
-differences_df.to_csv('./src/dataset/AAPL_diff.csv', index=False)
-differences_df_percentage.to_csv('./src/dataset/AAPL_diff_pct.csv', index=False)
+differences_df.to_csv('./predictor/dataset/AAPL_diff.csv', index=False)
+differences_df_percentage.to_csv('./predictor/dataset/AAPL_diff_pct.csv', index=False)
