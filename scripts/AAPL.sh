@@ -9,7 +9,6 @@ seq_len=336
 model_name=PatchTST
 
 root_path_name=./predictor/dataset/
-checkpoint_path_name=./predictor/checkpoints/
 data_path_name=AAPL.csv
 model_id_name=AAPL
 data_name=custom
@@ -46,6 +45,5 @@ do
       --patience 20\
       --itr 1\
       --target 'Close'\
-      --checkpoints $checkpoint_path_name \
       --batch_size 256 --learning_rate 0.0001 >predictor/logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
 done

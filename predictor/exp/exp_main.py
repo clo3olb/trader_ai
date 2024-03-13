@@ -111,7 +111,7 @@ class Exp_Main(Exp_Basic):
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
 
-        path = os.path.join(self.args.checkpoints, setting)
+        path = os.path.join(self.args.results_path, setting, 'checkpoints')
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -247,7 +247,7 @@ class Exp_Main(Exp_Basic):
         if test:
             print('loading model')
             self.model.load_state_dict(torch.load(os.path.join(
-                './checkpoints/' + setting, 'checkpoint.pth')))
+                self.args.result_path, setting, 'checkpoints', 'checkpoint.pth')))
 
         preds = []
         trues = []
@@ -361,7 +361,7 @@ class Exp_Main(Exp_Basic):
         pred_data, pred_loader = self._get_data(flag='pred')
 
         if load:
-            path = os.path.join(self.args.checkpoints, setting)
+            path = os.path.join(self.args.result_path, setting, 'checkpoints')
             best_model_path = path + '/' + 'checkpoint.pth'
             self.model.load_state_dict(torch.load(best_model_path))
 

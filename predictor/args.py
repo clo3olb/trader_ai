@@ -22,7 +22,7 @@ def createSetting(args, ii: int) -> str:
 
 
 def getArgsPath(setting: str):
-    return './predictor/checkpoints/{}/args.pkl'.format(setting)
+    return './predictor/results/{}/args.pkl'.format(setting)
 
 
 def saveArgs(setting: str, args):
@@ -60,7 +60,7 @@ def parseArgs():
     parser.add_argument('--data_path', type=str,
                         default='ETTh1.csv', help='data file')
     parser.add_argument('--result_path', type=str,
-                        default='./src/results/', help='path for saving results')
+                        default='./predictor/results/', help='path for saving results')
     parser.add_argument('--features', type=str, default='M',
                         help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
     parser.add_argument('--target', type=str, default='OT',
@@ -69,8 +69,6 @@ def parseArgs():
                         help='freq for time features encoding, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
     parser.add_argument('--date_header', type=str, default='date',
                         help='date column name')
-    parser.add_argument('--checkpoints', type=str,
-                        default='./checkpoints/', help='location of model checkpoints')
 
     # forecasting task
     parser.add_argument('--seq_len', type=int, default=96,
