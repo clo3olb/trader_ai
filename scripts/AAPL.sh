@@ -1,15 +1,15 @@
-if [ ! -d "./src/logs" ]; then
-    mkdir ./src/logs
+if [ ! -d "./predictor/logs" ]; then
+    mkdir ./predictor/logs
 fi
 
-if [ ! -d "./src/logs/LongForecasting" ]; then
-    mkdir ./src/logs/LongForecasting
+if [ ! -d "./predictor/logs/LongForecasting" ]; then
+    mkdir ./predictor/logs/LongForecasting
 fi
 seq_len=336
 model_name=PatchTST
 
-root_path_name=./src/dataset/
-checkpoint_path_name=./src/checkpoints/
+root_path_name=./predictor/dataset/
+checkpoint_path_name=./predictor/checkpoints/
 data_path_name=AAPL.csv
 model_id_name=AAPL
 data_name=custom
@@ -18,7 +18,7 @@ random_seed=2021
 # for pred_len in 96 192 336 720
 for pred_len in 96
 do
-    python -u src/run_experiment.py \
+    python -u predictor/run_experiment.py \
       --random_seed $random_seed \
       --is_training 1 \
       --root_path $root_path_name \
@@ -47,5 +47,5 @@ do
       --itr 1\
       --target 'Close'\
       --checkpoints $checkpoint_path_name \
-      --batch_size 256 --learning_rate 0.0001 >src/logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
+      --batch_size 256 --learning_rate 0.0001 >predictor/logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
 done
