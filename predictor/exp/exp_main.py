@@ -111,7 +111,7 @@ class Exp_Main(Exp_Basic):
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
 
-        path = os.path.join(self.args.results_path, setting, 'checkpoints')
+        path = os.path.join(self.args.result_path, setting, 'checkpoints')
         if not os.path.exists(path):
             os.makedirs(path)
 
