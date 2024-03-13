@@ -2,9 +2,6 @@ if [ ! -d "./predictor/logs" ]; then
     mkdir ./predictor/logs
 fi
 
-if [ ! -d "./predictor/logs/LongForecasting" ]; then
-    mkdir ./predictor/logs/LongForecasting
-fi
 seq_len=336
 model_name=PatchTST
 
@@ -45,5 +42,5 @@ do
       --patience 20\
       --itr 1\
       --target 'Close'\
-      --batch_size 256 --learning_rate 0.0001 >predictor/logs/LongForecasting/$model_name'_'$model_id_name'_'$seq_len'_'$pred_len.log 
+      --batch_size 256 --learning_rate 0.0001 >predictor/logs/$model_name'_'$model_id_name.log 
 done
