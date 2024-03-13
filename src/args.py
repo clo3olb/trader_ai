@@ -1,23 +1,25 @@
 import argparse
 import pickle
 
+
 def createSetting(args, ii: int) -> str:
     return '{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}'.format(args.model_id,
-                                                                                                  args.model,
-                                                                                                  args.data,
-                                                                                                  args.features,
-                                                                                                  args.seq_len,
-                                                                                                  args.label_len,
-                                                                                                  args.pred_len,
-                                                                                                  args.d_model,
-                                                                                                  args.n_heads,
-                                                                                                  args.e_layers,
-                                                                                                  args.d_layers,
-                                                                                                  args.d_ff,
-                                                                                                  args.factor,
-                                                                                                  args.embed,
-                                                                                                  args.distil,
-                                                                                                  args.des, ii)
+                                                                                               args.model,
+                                                                                               args.data,
+                                                                                               args.features,
+                                                                                               args.seq_len,
+                                                                                               args.label_len,
+                                                                                               args.pred_len,
+                                                                                               args.d_model,
+                                                                                               args.n_heads,
+                                                                                               args.e_layers,
+                                                                                               args.d_layers,
+                                                                                               args.d_ff,
+                                                                                               args.factor,
+                                                                                               args.embed,
+                                                                                               args.distil,
+                                                                                               args.des, ii)
+
 
 def getArgsPath(setting: str):
     return './src/checkpoints/{}/args.pkl'.format(setting)
@@ -57,6 +59,8 @@ def parseArgs():
                         default='./data/ETT/', help='root path of the data file')
     parser.add_argument('--data_path', type=str,
                         default='ETTh1.csv', help='data file')
+    parser.add_argument('--result_path', type=str,
+                        default='./src/results/', help='path for saving results')
     parser.add_argument('--features', type=str, default='M',
                         help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
     parser.add_argument('--target', type=str, default='OT',

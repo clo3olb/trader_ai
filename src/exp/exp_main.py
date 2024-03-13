@@ -252,7 +252,7 @@ class Exp_Main(Exp_Basic):
         preds = []
         trues = []
         inputx = []
-        folder_path = './test_results/' + setting + '/'
+        folder_path = self.args.result_path + setting + '/visuals/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
@@ -313,7 +313,7 @@ class Exp_Main(Exp_Basic):
 
                 print(pred.shape)
                 print(true.shape)
-                
+
                 # Save visual graphs
                 inputx.append(batch_x.detach().cpu().numpy())
                 input = batch_x.detach().cpu().numpy()
@@ -336,7 +336,7 @@ class Exp_Main(Exp_Basic):
         inputx = inputx.reshape(-1, inputx.shape[-2], inputx.shape[-1])
 
         # result save
-        folder_path = './results/' + setting + '/'
+        folder_path = self.args.result_path + setting + '/data/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
@@ -413,7 +413,7 @@ class Exp_Main(Exp_Basic):
         preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
 
         # result save
-        folder_path = './results/' + setting + '/'
+        folder_path = self.args.result_path + setting + '/prediction/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
