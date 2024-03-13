@@ -22,7 +22,7 @@ def createSetting(args, ii: int) -> str:
 
 
 def getArgsPath(setting: str):
-    return './src/checkpoints/{}/args.pkl'.format(setting)
+    return './predictor/checkpoints/{}/args.pkl'.format(setting)
 
 
 def saveArgs(setting: str, args):
