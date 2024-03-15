@@ -305,19 +305,22 @@ class Exp_Main(Exp_Basic):
                 pred = outputs  # outputs.detach().cpu().numpy()  # .squeeze()
                 true = batch_y  # batch_y.detach().cpu().numpy()  # .squeeze()
 
-                pred = np.array([test_data.inverse_transform(p) for p in pred])
-                true = np.array([test_data.inverse_transform(t) for t in true])
+                # Save visual graphs
+                inputx.append(batch_x.detach().cpu().numpy())
+                input = batch_x.detach().cpu().numpy()
+
+                # inverse transform
+                for i in range(pred.shape[0]):
+                    pred[i] = test_data.inverse_transform(pred[i])
+                    true[i] = test_data.inverse_transform(true[i])
+                
+                for i in range(input.shape[0]):
+                    input[i] = test_data.inverse_transform(input[i])
 
                 preds.append(pred)
                 trues.append(true)
 
-                print(pred.shape)
-                print(true.shape)
-
-                # Save visual graphs
-                inputx.append(batch_x.detach().cpu().numpy())
-                input = batch_x.detach().cpu().numpy()
-                print(input.shape)
+                print("input.shape: ", input.shape)
                 gt = np.concatenate(
                     (input[0, :, -1], true[0, :, -1]), axis=0)
                 pd = np.concatenate(
