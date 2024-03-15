@@ -17,7 +17,7 @@ pip install -r requirements.txt
 
 # remove ssh fingerprints
 # sometimes it gets wrong when ip address of vm changes
-rm .ssh/known_hosts
+rm ~/.ssh/known_hosts 
 
 
 
