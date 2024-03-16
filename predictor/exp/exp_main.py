@@ -310,12 +310,12 @@ class Exp_Main(Exp_Basic):
                 input = batch_x.detach().cpu().numpy()
 
                 # inverse transform
-                for i in range(pred.shape[0]):
-                    pred[i] = test_data.inverse_transform(pred[i])
-                    true[i] = test_data.inverse_transform(true[i])
+                for j in range(pred.shape[0]):
+                    pred[j] = test_data.inverse_transform(pred[j])
+                    true[j] = test_data.inverse_transform(true[j])
                 
-                for i in range(input.shape[0]):
-                    input[i] = test_data.inverse_transform(input[i])
+                for j in range(input.shape[0]):
+                    input[j] = test_data.inverse_transform(input[j])
 
                 preds.append(pred)
                 trues.append(true)
