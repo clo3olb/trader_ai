@@ -10,7 +10,7 @@ def main():
     symbol = "AAPL"
     interval = "1min"
     start_date = "2022-01"
-    end_date = "2022-01"
+    end_date = "2022-12"
     api_key = env_vars['ALPHA_VANTAGE_API_KEY']
     result_file = "data_fetcher/merged_data.csv"
 
