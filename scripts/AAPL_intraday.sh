@@ -26,8 +26,8 @@ do
       --features M \
       --seq_len $seq_len \
       --pred_len $pred_len \
-      --enc_in 5 \
-      --dec_in 5 \
+      --enc_in 19 \
+      --dec_in 19 \
       --e_layers 3 \
       --n_heads 16 \
       --d_model 128 \
@@ -39,8 +39,8 @@ do
       --stride 8\
       --des 'Exp' \
       --train_epochs 100\
-      --patience 5\
+      --patience 20\
       --itr 1\
       --target 'Close'\
-      --batch_size 1024 --learning_rate 0.0001 >predictor/logs/$model_name'_'$model_id_name.log 
+      --batch_size 512 --learning_rate 0.0001 >predictor/logs/$model_name'_'$model_id_name.log 
 done
