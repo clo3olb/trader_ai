@@ -100,3 +100,6 @@ mse:46223298560.0, mae:22491.091796875, rse:0.9500042200088501
 AAPL_intraday_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
 mse:7036224512.0, mae:19354.013671875, rse:0.8815571665763855
 
+AAPL_intraday_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
+mse:26858315776.0, mae:14833.6767578125, rse:0.938585102558136
+
