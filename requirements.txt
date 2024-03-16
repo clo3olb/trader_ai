@@ -8,3 +8,4 @@ requests
 pandas
 asyncio
 aiohttp
+shimmy
