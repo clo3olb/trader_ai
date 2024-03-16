@@ -5,8 +5,8 @@ fi
 seq_len=336
 model_name=PatchTST
 
-root_path_name=./predictor/dataset/
-data_path_name=AAPL_intraday.csv
+root_path_name=./data_fetcher/
+data_path_name=merged_data.csv
 model_id_name=AAPL_intraday
 data_name=custom
 
