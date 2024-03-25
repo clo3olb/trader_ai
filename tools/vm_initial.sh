@@ -15,9 +15,6 @@ source trader_ai/bin/activate
 # install packages
 pip install -r requirements.txt
 
-# remove ssh fingerprints
-# sometimes it gets wrong when ip address of vm changes
-rm ~/.ssh/known_hosts 
 
 
 
