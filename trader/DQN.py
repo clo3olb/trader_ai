@@ -9,9 +9,12 @@ from collections import deque
 import gymnasium as gym
 from gymnasium import Env
 
-from stable_baselines3 import DQN
+from stable_baselines3 import DDPG
 from stable_baselines3.common.env_checker import check_env
-from stable_baselines3.dqn.policies import MlpPolicy
+from stable_baselines3.ddpg.policies import MlpPolicy
+from stable_baselines3.common.logger import configure
+from stable_baselines3.common.buffers import ReplayBuffer
+from stable_baselines3.common.vec_env import VecEnv
 
 
 class DQNAgent:
@@ -23,7 +26,9 @@ class DQNAgent:
         self.epsilon = epsilon  # exploration rate
         self.epsilon_min = 0.01
         self.epsilon_decay = 0.99995
-        self.model: nn.Module = DQN(
+        self.env = env
+        new_logger = configure("trader/log", ["stdout", "csv"])
+        self.model: nn.Module = DDPG(
             MlpPolicy,
             env,
             learning_rate,
@@ -35,23 +40,21 @@ class DQNAgent:
             train_freq=4,
             gradient_steps=1,
             optimize_memory_usage=False,
-            target_update_interval=1000,
-            exploration_fraction=0.1,
-            exploration_final_eps=0.01,
-            exploration_initial_eps=epsilon,
-            max_grad_norm=10,
             tensorboard_log=None,
             policy_kwargs=None,
             verbose=0,
             seed=None,
             device='auto',
+            replay_buffer_class=ReplayBuffer,
+            replay_buffer_kwargs=None,
             _init_setup_model=True
         )
-        self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
+        self.model.set_logger(new_logger)
+        self.vec_env = VecEnv([env])
 
     def remember(self, state, action, reward, next_state, dones):
-        self.memory.append(
-            (state, action, reward, next_state, dones))
+        self.model.collect_rollouts(
+            self.vec_env, callback=None, train_freq=4, replay_buffer=self.model.replay_buffer)
 
     def act(self, state):
         if random.random() <= self.epsilon:
@@ -73,7 +76,7 @@ class DQNAgent:
         next_states = torch.tensor(next_states, dtype=torch.float)
         dones = torch.tensor(dones, dtype=torch.float).unsqueeze(1)
 
-        q_values = self.model(states).gather(1, actions)
+        self.model.train()
         next_q_values = self.model(next_states).max(1)[0].unsqueeze(1)
         target_q_values = rewards + (1 - dones) * self.gamma * next_q_values
 
