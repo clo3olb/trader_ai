@@ -78,12 +78,18 @@ class Dataset_Custom(Dataset):
         df_stamp = df_raw[[self.date_header]][border1:border2]
         df_stamp[self.date_header] = pd.to_datetime(df_stamp[self.date_header])
         if self.timeenc == 0:
-            df_stamp['month'] = df_stamp.date.apply(lambda row: row.month, 1)
-            df_stamp['day'] = df_stamp.date.apply(lambda row: row.day, 1)
-            df_stamp['weekday'] = df_stamp.date.apply(
+            df_stamp['year'] = df_stamp[self.date_header].apply(
+                lambda row: row.year, 1)
+            df_stamp['month'] = df_stamp[self.date_header].apply(
+                lambda row: row.month, 1)
+            df_stamp['day'] = df_stamp[self.date_header].apply(
+                lambda row: row.day, 1)
+            df_stamp['weekday'] = df_stamp[self.date_header].apply(
                 lambda row: row.weekday(), 1)
-            df_stamp['hour'] = df_stamp.date.apply(lambda row: row.hour, 1)
-            df_stamp['minute'] = df_stamp.date.apply(lambda row: row.minute, 1)
+            df_stamp['hour'] = df_stamp[self.date_header].apply(
+                lambda row: row.hour, 1)
+            df_stamp['minute'] = df_stamp[self.date_header].apply(
+                lambda row: row.minute, 1)
             data_stamp = df_stamp.drop([self.date_header], axis=1).values
         elif self.timeenc == 1:
             data_stamp = time_features(pd.to_datetime(
@@ -183,12 +189,18 @@ class Dataset_Pred(Dataset):
         df_stamp.date = list(
             tmp_stamp[self.date_header].values) + list(pred_dates[1:])
         if self.timeenc == 0:
-            df_stamp['month'] = df_stamp.date.apply(lambda row: row.month, 1)
-            df_stamp['day'] = df_stamp.date.apply(lambda row: row.day, 1)
-            df_stamp['weekday'] = df_stamp.date.apply(
+            df_stamp['year'] = df_stamp[self.date_header].apply(
+                lambda row: row.year, 1)
+            df_stamp['month'] = df_stamp[self.date_header].apply(
+                lambda row: row.month, 1)
+            df_stamp['day'] = df_stamp[self.date_header].apply(
+                lambda row: row.day, 1)
+            df_stamp['weekday'] = df_stamp[self.date_header].apply(
                 lambda row: row.weekday(), 1)
-            df_stamp['hour'] = df_stamp.date.apply(lambda row: row.hour, 1)
-            df_stamp['minute'] = df_stamp.date.apply(lambda row: row.minute, 1)
+            df_stamp['hour'] = df_stamp[self.date_header].apply(
+                lambda row: row.hour, 1)
+            df_stamp['minute'] = df_stamp[self.date_header].apply(
+                lambda row: row.minute, 1)
             data_stamp = df_stamp.drop([self.date_header], axis=1).values
         elif self.timeenc == 1:
             data_stamp = time_features(pd.to_datetime(
