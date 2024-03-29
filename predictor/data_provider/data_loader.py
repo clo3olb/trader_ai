@@ -49,6 +49,12 @@ class Dataset_Custom(Dataset):
         '''
         df_raw.columns: [self.date_header, ...(other features), target feature]
         '''
+        # # TODO: pct change
+        # for col in df_raw.columns:
+        #     if (col != self.date_header):
+        #         df_raw[col] = df_raw[col].pct_change()
+
+        # df_raw = df_raw.dropna()
 
         cols = list(df_raw.columns)
         cols.remove(self.target)
@@ -76,8 +82,10 @@ class Dataset_Custom(Dataset):
             data = self.scaler.transform(df_data.values)
         else:
             data = df_data.values
+
         df_stamp = df_raw[[self.date_header]][border1:border2]
         df_stamp[self.date_header] = pd.to_datetime(df_stamp[self.date_header])
+
         if self.timeenc == 0:
             df_stamp['year'] = df_stamp[self.date_header].apply(
                 lambda row: row.year, 1)

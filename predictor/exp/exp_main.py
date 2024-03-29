@@ -313,14 +313,13 @@ class Exp_Main(Exp_Basic):
                 for j in range(pred.shape[0]):
                     pred[j] = test_data.inverse_transform(pred[j])
                     true[j] = test_data.inverse_transform(true[j])
-                
+
                 for j in range(input.shape[0]):
                     input[j] = test_data.inverse_transform(input[j])
 
                 preds.append(pred)
                 trues.append(true)
 
-                print("input.shape: ", input.shape)
                 gt = np.concatenate(
                     (input[0, :, -1], true[0, :, -1]), axis=0)
                 pd = np.concatenate(

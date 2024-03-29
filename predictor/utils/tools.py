@@ -64,6 +64,10 @@ class EarlyStopping:
                 f'EarlyStopping counter: {self.counter} out of {self.patience}')
             if self.counter >= self.patience:
                 self.early_stop = True
+        # check nan
+        elif np.isnan(val_loss):
+            raise ValueError('val_loss is nan')
+
         else:
             self.best_score = score
             self.save_checkpoint(val_loss, model, path)
