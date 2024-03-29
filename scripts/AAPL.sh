@@ -43,5 +43,6 @@ do
       --patience 20\
       --itr 1\
       --target 'Close'\
+      --freq '1d' \
       --batch_size 256 --learning_rate 0.0001 >predictor/logs/$model_name'_'$model_id_name.log 
 done

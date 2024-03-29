@@ -13,8 +13,8 @@ warnings.filterwarnings('ignore')
 
 class Dataset_Custom(Dataset):
     def __init__(self, root_path, flag='train', size=None,
-                 features='S', data_path='ETTh1.csv',
-                 target='OT', scale=True, timeenc=0, freq='h', date_header='date'):
+                 features='S', data_path='AAPL.csv',
+                 target='Close', scale=True, timeenc=0, freq='h', date_header='date'):
         # size [seq_len, label_len, pred_len]
         # info
         if size == None:
@@ -49,6 +49,7 @@ class Dataset_Custom(Dataset):
         '''
         df_raw.columns: [self.date_header, ...(other features), target feature]
         '''
+
         cols = list(df_raw.columns)
         cols.remove(self.target)
         cols.remove(self.date_header)
@@ -122,8 +123,8 @@ class Dataset_Custom(Dataset):
 
 class Dataset_Pred(Dataset):
     def __init__(self, root_path, flag='pred', size=None,
-                 features='S', data_path='ETTh1.csv',
-                 target='OT', scale=True, inverse=False, timeenc=0, freq='15min', cols=None, date_header='date'):
+                 features='S', data_path='AAPL.csv',
+                 target='Close', scale=True, inverse=False, timeenc=0, freq='15min', cols=None, date_header='date'):
         # size [seq_len, label_len, pred_len]
         # info
         if size == None:
