@@ -43,5 +43,5 @@ do
       --patience 20\
       --itr 1\
       --target 'Close'\
-      --batch_size 512 --learning_rate 0.0001 >predictor/logs/$model_name'_'$model_id_name.log 
+      --batch_size 128 --learning_rate 0.0001 >predictor/logs/$model_name'_'$model_id_name.log 
 done
