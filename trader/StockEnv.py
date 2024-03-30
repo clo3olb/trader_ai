@@ -2,43 +2,39 @@ import gymnasium as gym
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from Account import Account
+
 
 class StockEnv(gym.Env):
-    def __init__(self, data: pd.DataFrame, initial_balance=10000):
+    def __init__(
+        self,
+        data: pd.DataFrame,
+        initial_balance=10000,
+        trading_fee=0.01,
+        window_size=10,
+        date_header="Date",
+        target_headers=["Close"],
+    ):
         self.data: pd.DataFrame = data.drop(columns=["Date"])
-        self.initial_balance = initial_balance
-        self.balance = initial_balance
-        self.shares = 0
-        self.current_step = 0
-        self.done = False
-        self.action_space = gym.spaces.Box(low=0, high=1, shape=(1,))
-        self.observation_space = gym.spaces.Box(
-            low=0, high=1, shape=(len(self._getStates(0)),))
 
-        self.history = []
+        self.initial_balance = initial_balance
+        self.trading_fee = trading_fee
+
+        self.action_space = gym.spaces.Box(low=[0], high=[1], dtype=float)
+        self.observation_space = gym.spaces.Box(
+            low=0, high=100000, shape=(len(self._getStates(0)),)
+        )
+
+        self.reset()
 
     def reset(self):
-        self.balance = self.initial_balance
+        self.account = Account(balance=self.initial_balance,
+                               trading_fee=self.trading_fee)
         self.shares = 0
         self.current_step = 0
         self.done = False
         self.history = []
         return self._getStates(self.current_step)
-
-    def _getValue(self, step: int):
-        return self.balance + self.shares * self._getPrice(step)
-
-    def getStateSize(self):
-        return self.observation_space.shape[0]
-
-    def getActionSize(self):
-        return self.action_space.shape[0]
-
-    def _getStates(self, step: int):
-        return list([*self.data.iloc[step].values, self.balance, self.shares, self._getValue(step)])
-
-    def _getPrice(self, step: int) -> float:
-        return self.data['Close'][step]
 
     def _buy(self, amount: float):
         if self.balance >= amount:
