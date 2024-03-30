@@ -13,7 +13,7 @@ def createSetting(args, ii: int) -> str:
                                                                                                args.d_model,
                                                                                                args.n_heads,
                                                                                                args.e_layers,
-                                                                                               args.d_layers,
+                                                                                               args.decoder_layers,
                                                                                                args.d_ff,
                                                                                                args.factor,
                                                                                                args.embed,
@@ -118,7 +118,7 @@ def parseArgs():
     parser.add_argument('--n_heads', type=int, default=8, help='num of heads')
     parser.add_argument('--e_layers', type=int, default=2,
                         help='num of encoder layers')
-    parser.add_argument('--d_layers', type=int, default=1,
+    parser.add_argument('--decoder_layers', type=int, default=1,
                         help='num of decoder layers')
     parser.add_argument('--d_ff', type=int, default=2048,
                         help='dimension of fcn')
