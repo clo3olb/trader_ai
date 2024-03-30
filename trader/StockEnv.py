@@ -36,32 +36,6 @@ class StockEnv(gym.Env):
         self.history = []
         return self._getStates(self.current_step)
 
-    def _buy(self, amount: float):
-        if self.balance >= amount:
-            print("Buying: ", amount, "Price: ",
-                  self._getPrice(self.current_step))
-            change_in_shares = amount / self._getPrice(self.current_step)
-            change_in_balance = -amount
-
-            self.shares += change_in_shares
-            self.balance += change_in_balance
-            return 0
-        else:
-            return -10
-
-    def _sell(self, amount: float):
-        if self.shares * self._getPrice(self.current_step) >= amount:
-            print("Selling: ", amount, "Price: ",
-                  self._getPrice(self.current_step))
-            change_in_shares = -amount / self._getPrice(self.current_step)
-            change_in_balance = amount
-
-            self.balance += change_in_balance
-            self.shares += change_in_shares
-            return 0
-        else:
-            return -10
-
     def step(self, action):
         if self.done:
             return self._getStates(self.current_step), 0, self.done, {
@@ -79,12 +53,12 @@ class StockEnv(gym.Env):
         reward = 0
 
         # need to have action(0~1) amount of shares
-        value = self._getPrice(self.current_step)
-        amount_change = action * value - self.shares * \
+        price = self._getPrice(self.current_step)
+        amount_change = action * price - self.shares * \
             self._getPrice(self.current_step)
 
         if amount_change > 0:
-            reward = self._buy(amount_change)
+            reward = self.account.buy(amount_change, price)
         elif amount_change < 0:
             reward = self._sell(-amount_change)
 
