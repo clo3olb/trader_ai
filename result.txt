@@ -22,3 +22,6 @@ mse:830207179096064.0, mae:9274055.0, rse:0.515512228012085
 Sin_wave_336_96_DLinear_custom_ftM_sl336_ll48_pl96_dm512_nh8_el2_dl1_df2048_fc1_ebtimeF_dtTrue_Exp_0  
 mse:33174352560128.0, mae:2157859.75, rse:0.11924786865711212
 
+AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
+mse:635321427427328.0, mae:8320323.5, rse:0.4619315564632416
+
