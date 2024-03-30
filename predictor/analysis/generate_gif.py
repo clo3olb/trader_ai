@@ -6,7 +6,7 @@ from PIL import Image
 import os
 
 
-def generateGIF(data_path: str):
+def generateGIF(data_path: str, cumprod: bool = False):
     # get npy file for pred and true
     true = np.load(data_path + "true.npy")
     pred = np.load(data_path + "pred.npy")
@@ -20,14 +20,19 @@ def generateGIF(data_path: str):
     os.makedirs(image_path)
 
     start = int(len(true) * 0.0)
-    end = int(len(true) * 1.0)
+    end = int(len(true) * 0.1)
     interval = 5
 
     # Loop through each index
     for index in range(start, end, interval):
-        input_data = input[index, :, 4]
-        true_data = true[index, :, 4]
-        pred_data = pred[index, :, 4]
+        if cumprod:
+            input_data = np.cumprod(input[index, :, 4] + 1)
+            true_data = np.cumprod(true[index, :, 4] + 1) * input_data[-1]
+            pred_data = np.cumprod(pred[index, :, 4] + 1) * input_data[-1]
+        else:
+            input_data = input[index, :, 4]
+            true_data = true[index, :, 4]
+            pred_data = pred[index, :, 4]
 
         true_data = [input_data[i] for i in range(
             len(input_data))] + [true_data[i] for i in range(len(true_data))]
@@ -69,9 +74,12 @@ def generateGIF(data_path: str):
 
 
 def getDataPath(model_id: str):
-    return "../results/" + model_id + "/data/"
+    return "./predictor/results/" + model_id + "/data/"
 
 
 model_id = "AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0"
+# model_id = "AAPL_cumprod_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0"
+
 data_path = getDataPath(model_id)
-generateGIF(data_path)
+
+generateGIF(data_path, False)
