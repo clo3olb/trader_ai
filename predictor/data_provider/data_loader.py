@@ -49,11 +49,9 @@ class Dataset_Custom(Dataset):
         '''
         df_raw.columns: [self.date_header, ...(other features), target feature]
         '''
-        # # TODO: pct change
         # for col in df_raw.columns:
         #     if (col != self.date_header):
         #         df_raw[col] = df_raw[col].pct_change()
-
         # df_raw = df_raw.dropna()
 
         cols = list(df_raw.columns)
