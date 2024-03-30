@@ -12,13 +12,10 @@ random.seed(fix_seed)
 torch.manual_seed(fix_seed)
 np.random.seed(fix_seed)
 
-# set gpu
+# error if GPU is not available
 if not torch.cuda.is_available():
     # error
-    print('GPU is not available')
-
-    # exit
-    exit()
+    raise ValueError('GPU is not available')
 
 args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
 
