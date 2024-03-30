@@ -9,8 +9,8 @@ root_path_name=./predictor/dataset/
 data_path_name=AAPL.csv
 model_id_name=AAPL
 data_name=custom
-
 random_seed=2021
+
 # for pred_len in 96 192 336 720
 for pred_len in 96
 do
