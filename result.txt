@@ -10,3 +10,9 @@ mse:2.744903326034546, mae:0.1808679848909378, rse:0.9940357208251953
 Sin_wave_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
 mse:5.4887121223146096e-05, mae:0.005852811504155397, rse:0.010473264381289482
 
+AAPL_336_96_Autoformer_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
+mse:1651022204239872.0, mae:13820749.0, rse:0.7269795536994934
+
+Sin_wave_336_96_Autoformer_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0  
+mse:27213575487488.0, mae:2014773.625, rse:0.10800458490848541
+
