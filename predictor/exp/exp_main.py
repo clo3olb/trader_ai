@@ -301,13 +301,10 @@ class Exp_Main(Exp_Basic):
                                   f_dim:].to(self.device)
                 outputs = outputs.detach().cpu().numpy()
                 batch_y = batch_y.detach().cpu().numpy()
+                input = batch_x.detach().cpu().numpy()
 
                 pred = outputs  # outputs.detach().cpu().numpy()  # .squeeze()
                 true = batch_y  # batch_y.detach().cpu().numpy()  # .squeeze()
-
-                # Save visual graphs
-                inputx.append(batch_x.detach().cpu().numpy())
-                input = batch_x.detach().cpu().numpy()
 
                 # inverse transform
                 for j in range(pred.shape[0]):
@@ -317,6 +314,7 @@ class Exp_Main(Exp_Basic):
                 for j in range(input.shape[0]):
                     input[j] = test_data.inverse_transform(input[j])
 
+                inputx.append(input)
                 preds.append(pred)
                 trues.append(true)
 
