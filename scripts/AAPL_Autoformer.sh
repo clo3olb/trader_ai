@@ -6,8 +6,8 @@ seq_len=336
 model_name=Autoformer
 
 root_path_name=./predictor/dataset/
-data_path_name=AAPL.csv
-model_id_name=AAPL
+data_path_name=sin_wave.csv
+model_id_name=Sin_wave
 data_name=custom
 
 random_seed=2021
@@ -32,6 +32,7 @@ do
       --n_heads 16 \
       --d_model 128 \
       --d_ff 256 \
+      --c_out 5 \
       --dropout 0.2\
       --fc_dropout 0.2\
       --head_dropout 0\

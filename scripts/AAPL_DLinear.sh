@@ -6,8 +6,8 @@ seq_len=336
 model_name=DLinear
 
 root_path_name=./predictor/dataset/
-data_path_name=AAPL.csv
-model_id_name=AAPL
+data_path_name=sin_wave.csv
+model_id_name=Sin_wave
 data_name=custom
 
 random_seed=2021
@@ -31,5 +31,5 @@ do
     --itr 1 \
     --target 'Close'\
     --batch_size 256 \
-    > predictor/logs/$model_name'_'$model_id_name.log 
+    --patience 100 > predictor/logs/$model_name'_'$model_id_name.log 
 done
