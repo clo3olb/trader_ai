@@ -3,22 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def getMax(data: pd.DataFrame, headers: list[str]):
-    max = 0
-    for header in headers:
-        if data[header].max() > max:
-            max = data[header].max()
-    return max
-
-
-def getMin(data: pd.DataFrame, headers: list[str]):
-    min = data[headers[0]].min()
-    for header in headers:
-        if data[header].min() < min:
-            min = data[header].min()
-    return min
-
-
 class StockEnv(gym.Env):
     def __init__(self, data: pd.DataFrame, initial_balance=10000):
         self.data: pd.DataFrame = data.drop(columns=["Date"])
@@ -30,8 +14,6 @@ class StockEnv(gym.Env):
         self.action_space = gym.spaces.Box(low=0, high=1, shape=(1,))
         self.observation_space = gym.spaces.Box(
             low=0, high=1, shape=(len(self._getStates(0)),))
-        self.max = getMax(data, ["Open", "High", "Low", "Close"])
-        self.min = getMin(data, ["Open", "High", "Low", "Close"])
 
         self.history = []
 
@@ -128,8 +110,6 @@ class StockEnv(gym.Env):
         ax2 = ax1.twinx()
         ax1.plot(self.data['Close'])
         ax2.plot(self.history, color='r')
-        ax1.axhline(y=self.min, color='r', linestyle='--')
-        ax1.axhline(y=self.max, color='r', linestyle='--')
         ax1.set_ylabel('Close Price')
         ax2.set_ylabel('Transaction Amount')
         plt.savefig('trader/plot.png')
