@@ -6,7 +6,7 @@ from PIL import Image
 import os
 
 
-def generateGIF(model_id: str, data_path: str):
+def generateGIF(data_path: str):
     # get npy file for pred and true
     true = np.load(data_path + "true.npy")
     pred = np.load(data_path + "pred.npy")
@@ -68,6 +68,10 @@ def generateGIF(model_id: str, data_path: str):
         os.system("rm -rf " + image_path)
 
 
+def getDataPath(model_id: str):
+    return "../results/" + model_id + "/data/"
+
+
 model_id = "AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0"
-data_path = "../results/" + model_id + "/data/"
-generateGIF(model_id, data_path)
+data_path = getDataPath(model_id)
+generateGIF(data_path)
