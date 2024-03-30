@@ -178,8 +178,6 @@ class Decoder(nn.Module):
         for layer in self.layers:
             x, residual_trend = layer(
                 x, cross, x_mask=x_mask, cross_mask=cross_mask)
-            print(trend.shape)
-            print(residual_trend.shape)
             trend = trend + residual_trend
 
         if self.norm is not None:
