@@ -1,0 +1,1 @@
+source trader_ai/bin/activate
