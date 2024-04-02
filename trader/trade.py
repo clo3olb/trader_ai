@@ -1,62 +1,38 @@
+import gymnasium as gym
 import pandas as pd
-from StockEnv import StockEnv
-from DQN import DQNAgent
+from StockMarketEnv import StockMarketEnv
+from stable_baselines3.common.env_checker import check_env
+from stable_baselines3 import PPO
+from stable_baselines3.common.evaluation import evaluate_policy
+
 
 data_path = 'trader/dataset/AAPL.csv'
 data = pd.read_csv(data_path)
-data = data.head(100)
+data = data.dropna()
+# data = data.head(100)
+
+env = StockMarketEnv(data)
+check_env(env, warn=True)
+
+model = PPO("MlpPolicy", env, verbose=1, learning_rate=0.001)
+model.learn(total_timesteps=10000)
+
+print("Saving model...")
+model.save("./trader/trade.pt")
+
+mean_reward, std_reward = evaluate_policy(
+    model, model.get_env(), n_eval_episodes=10)
+
+vec_env = model.get_env()
+vec_env.render_mode = 'human'
+obs = vec_env.reset()
+
+print("Rendering...")
+for i in range(1000):
+    action, _states = model.predict(obs, deterministic=True)
+    obs, rewards, dones, info = vec_env.step(action)
+    vec_env.render()
 
 
-batch_size = 1
-
-
-def train(episodes: int = 100, initial_balance=1000, batch_size: int = 1, learning_rate: float = 0.001, epsilon: float = 1.0, load: bool = False):
-    env = StockEnv(data, initial_balance)
-    agent = DQNAgent(env, state_size=env.getStateSize(),
-                     action_size=env.getActionSize(), learning_rate=learning_rate, epsilon=epsilon)
-    if load:
-        agent.load('trader/model.pth')
-
-    for episode in range(episodes):
-        print('Episode:', episode + 1)
-        obs = env.reset()
-        count = 0
-        while True:
-            count += 1
-
-            action = agent.act(obs)
-
-            next_obs, reward, done, info = env.step(action)
-            agent.remember(obs, action, reward, next_obs, done)
-            obs = next_obs
-
-            loss = agent.replay(batch_size=batch_size)
-            if done:
-                print(info)
-                break
-
-    agent.save('trader/model.pth')
-    env.render()
-    print(env.history)
-
-
-def test(initial_balance=1000):
-    agent = DQNAgent(state_size=env.getStateSize(),
-                     action_size=env.getActionSize(), epsilon=0)
-    agent.load('trader/model.pth')
-    env = StockEnv(data, initial_balance)
-
-    obs = env.reset()
-    while True:
-        action = agent.act(obs)
-        next_obs, reward, done, info = env.step(action)
-        obs = next_obs
-
-        if done:
-            print(info)
-            break
-
-
-train(episodes=10, initial_balance=1000,  batch_size=1,
-      learning_rate=0.001, epsilon=1.0, load=False)
-# test()
+# model = PPO.load("./trader/lunar_project/lunar.pt", env=env)
+# model.save("./trader/lunar_project/lunar.pt")
