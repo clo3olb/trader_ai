@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import requests
 
+
 def createUrl(api_domain: str, function: str, api_key: str, params: dict) -> str:
     url = f"https://{api_domain}/query?function={function}&apikey={api_key}"
 
@@ -26,7 +27,7 @@ def fetch_data(
         # create data frame
         data_frame = pd.DataFrame(
             columns=["Date"] + list(column_mapping.keys()))
-        
+
         rows = []
         for date, item in fetched_data.items():
             row = {"Date": date}
@@ -36,6 +37,33 @@ def fetch_data(
         data_frame = pd.concat([data_frame, pd.DataFrame(rows)])
         data_frame["Date"] = pd.to_datetime(data_frame["Date"])
         return data_frame
+
+
+def fetchDailyPriceData(symbol: str, api_key: str) -> pd.DataFrame:
+    domain = "www.alphavantage.co"
+    function = "TIME_SERIES_DAILY"
+    data_key = "Time Series (Daily)"
+    column_mapping = {
+        "Open": "1. open",
+        "High": "2. high",
+        "Low": "3. low",
+        "Close": "4. close",
+        "Volume": "5. volume"
+    }
+
+    params = {
+        "apikey": api_key,
+        "function": function,
+        "symbol": symbol,
+        "outputsize": "full",
+
+    }
+
+    url = createUrl(domain, function, api_key, params)
+    print(f"{symbol} Daily Price - Fetching...")
+    data_frame = fetch_data(url, data_key, column_mapping)
+    print(f"{symbol} Daily Price - Done")
+    return data_frame
 
 
 def fetchIntradyPriceData(symbol: str, interval: str, month: str, api_key: str) -> pd.DataFrame:
@@ -91,6 +119,7 @@ def fetchSMAData(symbol: str, interval: str, month: str, time_period: int, api_k
     print(f"{month} SMA_{time_period} - Done")
     return data_frame
 
+
 def fetchEMAData(symbol: str, interval: str, month: str, time_period: int, api_key: str) -> pd.DataFrame:
     domain = "www.alphavantage.co"
     function = "EMA"
@@ -115,6 +144,7 @@ def fetchEMAData(symbol: str, interval: str, month: str, time_period: int, api_k
     print(f"{month} EMA_{time_period} - Done")
     return data_frame
 
+
 def fetchRSIData(symbol: str, interval: str, month: str, time_period: int, api_key: str) -> pd.DataFrame:
     domain = "www.alphavantage.co"
     function = "RSI"
@@ -138,6 +168,7 @@ def fetchRSIData(symbol: str, interval: str, month: str, time_period: int, api_k
     data_frame = fetch_data(url, data_key, column_mapping)
     print(f"{month} RSI_{time_period} - Done")
     return data_frame
+
 
 def fetchMACDData(symbol: str, interval: str, month: str, api_key: str) -> pd.DataFrame:
     domain = "www.alphavantage.co"
@@ -164,6 +195,7 @@ def fetchMACDData(symbol: str, interval: str, month: str, api_key: str) -> pd.Da
     print(f"{month} MACD - Done")
     return data_frame
 
+
 def fetchVWAPData(symbol: str, interval: str, month: str, api_key: str) -> pd.DataFrame:
     domain = "www.alphavantage.co"
     function = "VWAP"
@@ -185,6 +217,7 @@ def fetchVWAPData(symbol: str, interval: str, month: str, api_key: str) -> pd.Da
     data_frame = fetch_data(url, data_key, column_mapping)
     print(f"{month} VWAP - Done")
     return data_frame
+
 
 def fetchCryptoData(symbol: str, interval: str, month: str, api_key: str) -> pd.DataFrame:
     domain = "www.alphavantage.co"
@@ -208,6 +241,7 @@ def fetchCryptoData(symbol: str, interval: str, month: str, api_key: str) -> pd.
     data_frame = fetch_data(url, data_key, column_mapping)
     print(f"{month} Crypto({symbol}) - Done")
     return data_frame
+
 
 def fetchCrudeOildata(interval: str, oil_type: str, api_key: str) -> pd.DataFrame:
     domain = "www.alphavantage.co"
@@ -233,9 +267,9 @@ def fetchCrudeOildata(interval: str, oil_type: str, api_key: str) -> pd.DataFram
     return data_frame
 
 
-
 def createMergedCSV(symbol: str, interval: str, month: str, api_key: str, result_file: str):
-    price_data = fetchIntradyPriceData(symbol, interval, month, api_key=api_key)
+    price_data = fetchIntradyPriceData(
+        symbol, interval, month, api_key=api_key)
     sma_10_data = fetchSMAData(symbol, interval, month, 10, api_key=api_key)
     sma_50_data = fetchSMAData(symbol, interval, month, 50, api_key=api_key)
     sma_100_data = fetchSMAData(symbol, interval, month, 100, api_key=api_key)
@@ -247,8 +281,6 @@ def createMergedCSV(symbol: str, interval: str, month: str, api_key: str, result
     rsi_100_data = fetchRSIData(symbol, interval, month, 100, api_key=api_key)
     vwap_data = fetchVWAPData(symbol, interval, month, api_key=api_key)
     macd_data = fetchMACDData(symbol, interval, month, api_key=api_key)
-
-
 
     # merge
     df = price_data.merge(sma_10_data, how="outer", on="Date")
