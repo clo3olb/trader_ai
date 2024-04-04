@@ -4,13 +4,58 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
+from tqdm import tqdm
 
-
-def generateGIF(data_path: str, cumprod: bool = False):
+def recreateData(data_path: str, cumprod: bool = False):
     # get npy file for pred and true
     true = np.load(data_path + "true.npy")
     pred = np.load(data_path + "pred.npy")
     input = np.load(data_path + "x.npy")
+
+    # we only need last column which is Close
+    input = input[:, :, -1]
+    true = true[:, :, -1]
+    pred = pred[:, :, -1]
+
+    print(input.shape)
+
+    ground_truth = []
+    prediction = []
+
+    if cumprod:
+        starting_inputs = np.cumprod(input[:, 0] + 1, axis=0)
+
+    plt.plot(starting_inputs[:336])
+
+    plt.savefig(data_path + "starting_inputs.png")
+    
+    for index in range(len(true)):
+        if cumprod:
+            input[index][0] = 0
+            input_data = np.cumprod(input[index] + 1) * starting_inputs[index]
+            true_data = np.cumprod(true[index] + 1) * input_data[-1]
+            pred_data = np.cumprod(pred[index] + 1) * input_data[-1]
+        else:
+            input_data = input[index]
+            true_data = true[index]
+            pred_data = pred[index]
+
+        print(input_data[0])
+
+        true_data = [input_data[i] for i in range(
+            len(input_data))] + [true_data[i] for i in range(len(true_data))]
+        pred_data = [input_data[i] for i in range(
+            len(input_data))] + [pred_data[i] for i in range(len(pred_data))]
+
+        ground_truth.append(true_data)
+        prediction.append(pred_data)
+    
+    assert ground_truth[0][1] == ground_truth[1][0]
+    return ground_truth, prediction
+
+def generateGIF(data_path: str, cumprod: bool = False):
+    # get npy file for pred and true
+    ground_truth, prediction = recreateData(data_path, cumprod)
 
     image_path = data_path + "images/"
 
@@ -19,49 +64,35 @@ def generateGIF(data_path: str, cumprod: bool = False):
         os.system("rm -rf " + image_path)
     os.makedirs(image_path)
 
-    start = int(len(true) * 0.0)
-    end = int(len(true) * 0.1)
     interval = 5
-
-    # Loop through each index
-    for index in range(start, end, interval):
-        if cumprod:
-            input_data = np.cumprod(input[index, :, 4] + 1)
-            true_data = np.cumprod(true[index, :, 4] + 1) * input_data[-1]
-            pred_data = np.cumprod(pred[index, :, 4] + 1) * input_data[-1]
-        else:
-            input_data = input[index, :, 4]
-            true_data = true[index, :, 4]
-            pred_data = pred[index, :, 4]
-
-        true_data = [input_data[i] for i in range(
-            len(input_data))] + [true_data[i] for i in range(len(true_data))]
-        pred_data = [input_data[i] for i in range(
-            len(input_data))] + [pred_data[i] for i in range(len(pred_data))]
-
-        plt.figure()
-
-        # Plot the true and predicted values for the current index
-        plt.plot(true_data, label="True", linewidth=1)
-        plt.plot(pred_data, label="Predicted", linewidth=1)
-
-        plt.axvline(x=len(input_data), color='r', linestyle='--')
-
-        plt.title(f"Index: {index}")
-
-        plt.legend(loc="upper left")
-
-        # Save the figure as an image
-        plt.savefig(image_path + f'index_{index}.png')
-
-        # Close the figure
-        plt.close()
+    start = int(len(ground_truth) * 0.0) + interval
+    end = int(len(ground_truth) * 0.01)
 
     # Create a list to store the images
     images = []
 
-    # Loop through each index and open the corresponding image
-    for index in range(start, end, interval):
+    # Loop through each index with tqdm progress bar
+    for index in tqdm(range(start, end, interval)):
+
+        plt.figure()
+
+        # Plot the true and predicted values for the current index
+        plt.plot(ground_truth[index], label="True", linewidth=1)
+
+        for i in range(interval):
+            plt.plot(prediction[index - i], label=f"Pred {interval - i}", linewidth=1)
+
+        plt.title(f"Index: {index}")
+        plt.legend(loc="upper left")
+        plt.axvline(x=336, color='r', linestyle='--')
+
+        # Save the figure as an image
+        plt.savefig(image_path + f'index_{index}.png', bbox_inches='tight')
+
+        # Close the figure
+        plt.close()
+
+        # Open the corresponding image and append it to the list
         image = Image.open(image_path + f'index_{index}.png')
         images.append(image)
 
@@ -77,9 +108,9 @@ def getDataPath(model_id: str):
     return "./predictor/results/" + model_id + "/data/"
 
 
-model_id = "AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0"
-# model_id = "AAPL_cumprod_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0"
-
+# model_id = "PatchTST_AAPL_336_96"
+model_id = "PatchTST_AAPL_pct_336_96"
 data_path = getDataPath(model_id)
 
-generateGIF(data_path, False)
+# generateGIF(data_path, False)
+generateGIF(data_path, True)
