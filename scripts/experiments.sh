@@ -1,8 +1,9 @@
 # model_name, data_name, input_size
+sh scripts/Transformer.sh Transformer_sin_wave sin_wave 5
 
 # Sin Wave
 # sh scripts/PatchTST.sh PatchTST_sin_wave sin_wave 5
-sh scripts/Autoformer.sh Autoformer_sin_wave sin_wave 5
+# sh scripts/Autoformer.sh Autoformer_sin_wave sin_wave 5
 # sh scripts/DLinear.sh DLinear_sin_wave sin_wave 5
 
 # AAPL
