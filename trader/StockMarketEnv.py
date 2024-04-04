@@ -12,15 +12,21 @@ MAX_ACCOUNT_BALANCE = INITIAL_ACCOUNT_BALANCE * 10
 MAX_NUM_SHARES = 7421640800
 MAX_SHARE_PRICE = 5000
 
+REWARD_SCALE = 1
+REWARD_ON_PROFIT_LIMIT_EXCEED = 100 * REWARD_SCALE
+REWARD_ON_LOSS_LIMIT_EXCEED = -150 * REWARD_SCALE
+REWARD_ON_EVERY_STEP = -2 * REWARD_SCALE
+
 
 class StockMarketEnv(gym.Env):
-    def __init__(self, df: pd.DataFrame, initial_balance=INITIAL_ACCOUNT_BALANCE, verbose=0):
+    def __init__(self, df: pd.DataFrame, initial_balance=INITIAL_ACCOUNT_BALANCE, window_size=50, verbose=0):
         super(StockMarketEnv, self).__init__()
 
         self.initial_balance = initial_balance
         self.verbose = verbose
 
         self.df = df
+        self.window_size = window_size
 
         # Actions of the format Buy x%, Sell x%, Hold, etc.
         self.action_space = spaces.Box(
@@ -28,32 +34,32 @@ class StockMarketEnv(gym.Env):
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
-            low=0, high=1, shape=(6, 6), dtype=np.float32)
+            low=0, high=1, shape=(len(df.columns) - 1, self.window_size + 1), dtype=np.float32)
 
     def _next_observation(self):
         # Get the stock data points for the last 5 days and scale to between 0-1
         frame = np.array([
-            self.df.loc[self.current_step - 6: self.current_step -
+            self.df.loc[self.current_step - self.window_size: self.current_step -
                         1, 'Open'].values / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step - 6: self.current_step -
+            self.df.loc[self.current_step - self.window_size: self.current_step -
                         1, 'High'].values / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step - 6: self.current_step -
+            self.df.loc[self.current_step - self.window_size: self.current_step -
                         1, 'Low'].values / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step - 6: self.current_step -
+            self.df.loc[self.current_step - self.window_size: self.current_step -
                         1, 'Close'].values / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step - 6: self.current_step -
+            self.df.loc[self.current_step - self.window_size: self.current_step -
                         1, 'Volume'].values / MAX_NUM_SHARES,
         ])
 
         # Append additional data and scale each value to between 0-1
-        obs = np.append(frame, [[
-            self.balance / MAX_ACCOUNT_BALANCE,
-            self.shares_held / MAX_NUM_SHARES,
-            self.max_net_worth / MAX_ACCOUNT_BALANCE,
-            self.cost_basis / MAX_SHARE_PRICE,
-            self.total_shares_sold / MAX_NUM_SHARES,
-            self.total_sales_value / (MAX_NUM_SHARES * MAX_SHARE_PRICE),
-        ]], axis=0)
+        obs = np.append(frame,
+                        [[self.balance / MAX_ACCOUNT_BALANCE],
+                         [self.shares_held / MAX_NUM_SHARES],
+                         [self.max_net_worth / MAX_ACCOUNT_BALANCE],
+                         # [self.cost_basis / MAX_SHARE_PRICE],
+                         [self.total_shares_sold / MAX_NUM_SHARES],
+                         [self.total_sales_value / (MAX_NUM_SHARES * MAX_SHARE_PRICE)]],
+                        axis=1)
 
         # if any of the value larger than 1
         for row in range(len(obs)):
@@ -82,7 +88,7 @@ class StockMarketEnv(gym.Env):
                 # Buy amount % of balance in shares
                 if self.balance == 0:
                     self.action_history.append(0)
-                    return -10
+                    return -100
 
                 total_possible = int(self.balance / current_price)
                 shares_bought = int(total_possible * amount)
@@ -90,9 +96,12 @@ class StockMarketEnv(gym.Env):
                 additional_cost = shares_bought * current_price
 
                 self.balance -= additional_cost
-                self.cost_basis = (
-                    prev_cost + additional_cost) / (self.shares_held + shares_bought)
                 self.shares_held += shares_bought
+                if (self.shares_held + shares_bought) == 0:
+                    self.cost_basis = 0
+                else:
+                    self.cost_basis = (prev_cost + additional_cost) / \
+                        (self.shares_held + shares_bought)
                 self.net_worth = self.balance + self.shares_held * current_price
                 self.action_history.append(shares_bought)
 
@@ -100,7 +109,7 @@ class StockMarketEnv(gym.Env):
                 # Sell amount % of shares held
                 if self.shares_held == 0:
                     self.action_history.append(0)
-                    return -10
+                    return -100
 
                 shares_sold = int(self.shares_held * -amount)
                 self.balance += shares_sold * current_price
@@ -121,7 +130,7 @@ class StockMarketEnv(gym.Env):
         # Execute one time step within the environment
         # clear the terminal
 
-        reward = 0
+        reward = REWARD_ON_EVERY_STEP
 
         self.timesteps += 1
         self._take_action(action)
@@ -142,7 +151,10 @@ class StockMarketEnv(gym.Env):
             self.info(f"Reward: {reward}")
 
         if abs(profit) > self.initial_balance * self.worth_change_limit:
-            reward += profit
+            if profit > 0:
+                reward += REWARD_ON_PROFIT_LIMIT_EXCEED
+            else:
+                reward += REWARD_ON_LOSS_LIMIT_EXCEED
 
         terminated: bool = bool(abs(
             profit) > self.initial_balance * self.worth_change_limit)
@@ -164,7 +176,7 @@ class StockMarketEnv(gym.Env):
             'total_sales_value': self.total_sales_value
         }
 
-        if self.current_step > len(self.df.loc[:, 'Open'].values) - 6:
+        if self.current_step > len(self.df.loc[:, 'Open'].values) - self.window_size - 1:
             return obs, reward, True, truncated, info
         return obs, reward, terminated, truncated, info
 
@@ -188,9 +200,7 @@ class StockMarketEnv(gym.Env):
 
         # Set the current step to a random point within the data frame
         self.current_step = random.randint(
-            6, len(self.df['Open'].values) - 6)
-
-        self.debug("Current step reset:", self.current_step)
+            (self.window_size + 1), len(self.df['Open'].values) - (self.window_size + 1))
 
         observation = self._next_observation()
         return observation, {
@@ -204,31 +214,33 @@ class StockMarketEnv(gym.Env):
             'total_sales_value': self.total_sales_value
         }
 
-    def render(self, mode='human', close=False, interval=0.1):
+    def render(self, mode='human', close=False, interval=0.01):
         if self.renderer is None:
             self.renderer = Renderer(
                 window_size=100, profit_limit=self.initial_balance * self.worth_change_limit)
             self.renderer.show()
-        else:
-            self.renderer.update_profit(self.profit_history)
-            self.renderer.update_price(self.price_history)
-            self.renderer.update_action(self.action_history)
+        self.renderer.update_profit(self.profit_history)
+        self.renderer.update_price(self.price_history)
+        self.renderer.update_action(self.action_history)
+        self.renderer.update_portfolio(
+            self.balance, self.shares_held * self._get_current_price())
 
-            self.renderer.draw_frame()
-            self.renderer.draw_profit()
-            self.renderer.draw_price()
-            self.renderer.draw_action()
+        self.renderer.draw_frame()
+        self.renderer.draw_profit()
+        self.renderer.draw_price()
+        self.renderer.draw_action()
+        self.renderer.draw_portfolio()
 
-            self.renderer.pause(interval)
+        self.renderer.pause(interval)
 
-    def _log(self, args, type="info"):
+    def _log(self, *args, type="info"):
         if self.verbose == 1 and type == "info":
-            print(args)
+            print(*args)
         if self.verbose == 2 and type == "debug":
-            print(args)
+            print(*args)
 
     def info(self, *args):
-        self._log(args, "info")
+        self._log(*args, type="info")
 
     def debug(self, *args):
-        self._log(args, "debug")
+        self._log(*args, type="debug")

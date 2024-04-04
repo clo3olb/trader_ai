@@ -14,11 +14,13 @@ data = data.dropna()
 env = StockMarketEnv(data, initial_balance=10000, verbose=2)
 check_env(env, warn=True)
 
-env.render()
+model = PPO("MlpPolicy", env, verbose=1, learning_rate=0.001,
+            tensorboard_log="./trader/tensorboard/")
 
-model = PPO("MlpPolicy", env, verbose=1, learning_rate=0.001)
-model.learn(total_timesteps=1000)
 
+# model.load("./trader/trade.pt")
+
+model.learn(total_timesteps=1_0_000)
 print("Saving model...")
 model.save("./trader/trade.pt")
 
@@ -34,7 +36,3 @@ for i in range(1000):
     action, _states = model.predict(obs, deterministic=True)
     obs, rewards, dones, info = vec_env.step(action)
     vec_env.render()
-
-
-# model = PPO.load("./trader/lunar_project/lunar.pt", env=env)
-# model.save("./trader/lunar_project/lunar.pt")

@@ -12,6 +12,6 @@ env.reset()
 for i in range(1000):
     action = env.action_space.sample()
     obs, reward, terminated, truncated, info = env.step(action)
-    env.render(interval=0.5)
+    env.render(interval=0.1)
     if terminated or truncated:
         env.reset()
