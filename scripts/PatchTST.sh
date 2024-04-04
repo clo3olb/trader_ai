@@ -12,14 +12,14 @@ model_id_name=$1
 data_name=custom
 random_seed=2024
 
-echo $data_path_name
+echo $model_id_name $data_path_name
 
 python -u predictor/run_experiment.py \
     --random_seed $random_seed \
     --is_training 1 \
     --root_path $root_path_name \
     --data_path $data_path_name \
-    --date_header 'timestamp'\
+    --date_header 'Timestamp'\
     --model_id $model_id_name'_'$seq_len'_'$pred_len \
     --model $model_name \
     --data $data_name \
