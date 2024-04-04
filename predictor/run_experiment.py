@@ -32,26 +32,25 @@ print(args)
 Exp = Exp_Main
 
 if args.is_training:
-    for ii in range(args.itr):
-        # setting record of experiments
-        setting = createSetting(args, ii)
+    # setting record of experiments
+    setting = createSetting(args)
 
-        exp = Exp(args)  # set experiments
-        print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
-        exp.train(setting)
+    exp = Exp(args)  # set experiments
+    print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
+    exp.train(setting)
 
-        print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-        exp.test(setting)
+    print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+    exp.test(setting)
 
-        # save args
-        saveArgs(setting, args)
+    # save args
+    saveArgs(setting, args)
 
-        if args.do_predict:
-            print(
-                '>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-            exp.predict(setting, True)
+    if args.do_predict:
+        print(
+            '>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+        exp.predict(setting, True)
 
-        torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
 else:
     ii = 0
     setting = createSetting(args, ii)
