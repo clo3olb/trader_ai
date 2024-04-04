@@ -5,24 +5,22 @@ import gymnasium as gym
 from gymnasium import spaces
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-
-MAX_ACCOUNT_BALANCE = 20000
-MAX_NUM_SHARES = 2147483647
-MAX_SHARE_PRICE = 5000
+from Renderer import Renderer
 
 INITIAL_ACCOUNT_BALANCE = 10000
+MAX_ACCOUNT_BALANCE = INITIAL_ACCOUNT_BALANCE * 10
+MAX_NUM_SHARES = 7421640800
+MAX_SHARE_PRICE = 5000
 
 
 class StockMarketEnv(gym.Env):
-    def __init__(self, df: pd.DataFrame, initial_balance=INITIAL_ACCOUNT_BALANCE):
+    def __init__(self, df: pd.DataFrame, initial_balance=INITIAL_ACCOUNT_BALANCE, verbose=0):
         super(StockMarketEnv, self).__init__()
 
         self.initial_balance = initial_balance
+        self.verbose = verbose
 
         self.df = df
-        self.reward_range = (np.float32(0), np.float32(MAX_ACCOUNT_BALANCE))
 
         # Actions of the format Buy x%, Sell x%, Hold, etc.
         self.action_space = spaces.Box(
@@ -31,12 +29,6 @@ class StockMarketEnv(gym.Env):
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
             low=0, high=1, shape=(6, 6), dtype=np.float32)
-
-        self.worth_change_limit = 0.2
-
-        self.price_history = []
-
-        self.timesteps = 0
 
     def _next_observation(self):
         # Get the stock data points for the last 5 days and scale to between 0-1
@@ -62,21 +54,34 @@ class StockMarketEnv(gym.Env):
             self.total_shares_sold / MAX_NUM_SHARES,
             self.total_sales_value / (MAX_NUM_SHARES * MAX_SHARE_PRICE),
         ]], axis=0)
+
+        # if any of the value larger than 1
+        for row in range(len(obs)):
+            for col in range(len(obs[row])):
+                if obs[row][col] > 1:
+                    print("Balance: ", self.balance)
+                    print(obs)
+                    raise ValueError(
+                        f"Value at row {row} and col {col} is greater than 1, and timestep is {self.current_step}")
+
         return obs.astype(np.float32)
+
+    def _get_current_price(self):
+        return random.uniform(self.df.loc[self.current_step, "Open"], self.df.loc[self.current_step, "Close"])
 
     def _take_action(self, action):
         # Set the current price to a random price within the time step
-        current_price = random.uniform(
-            self.df.loc[self.current_step, "Open"], self.df.loc[self.current_step, "Close"])
+        current_price = self._get_current_price()
 
+        self.price_history.append(current_price)
         action_type = action[0]
         amount = action[1]
 
         if action_type > 0:
             if amount >= 0:
-                print("Buy")
                 # Buy amount % of balance in shares
                 if self.balance == 0:
+                    self.action_history.append(0)
                     return -10
 
                 total_possible = int(self.balance / current_price)
@@ -88,11 +93,13 @@ class StockMarketEnv(gym.Env):
                 self.cost_basis = (
                     prev_cost + additional_cost) / (self.shares_held + shares_bought)
                 self.shares_held += shares_bought
+                self.net_worth = self.balance + self.shares_held * current_price
+                self.action_history.append(shares_bought)
 
             elif amount < 0:
-                print("Sell")
                 # Sell amount % of shares held
                 if self.shares_held == 0:
+                    self.action_history.append(0)
                     return -10
 
                 shares_sold = int(self.shares_held * -amount)
@@ -100,47 +107,49 @@ class StockMarketEnv(gym.Env):
                 self.shares_held -= shares_sold
                 self.total_shares_sold += shares_sold
                 self.total_sales_value += shares_sold * current_price
+                self.net_worth = self.balance + self.shares_held * current_price
+                self.action_history.append(-shares_sold)
         else:
-            print("Hold")
-        self.net_worth = self.balance + self.shares_held * current_price
-
+            self.action_history.append(0)
         if self.net_worth > self.max_net_worth:
             self.max_net_worth = self.net_worth
 
         if self.shares_held == 0:
             self.cost_basis = 0
 
-        return 0
-
     def step(self, action):
         # Execute one time step within the environment
         # clear the terminal
-        print("\033[H\033[J")
+
+        reward = 0
 
         self.timesteps += 1
-        print(f"Step: {self.timesteps}")
-        print(f"Action: {action}")
-        reward = self._take_action(action)
+        self._take_action(action)
         self.current_step += 1
         profit = self.net_worth - self.initial_balance
         self.profit_history.append(profit)
-        print(f"Profit: {profit}")
-        print(f"Net worth: {self.net_worth}")
-        print(f"Max net worth: {self.max_net_worth}")
-        print(f"Shares held: {self.shares_held}")
-        print(f"Cost basis: {self.cost_basis}")
-        print(f"Total shares sold: {self.total_shares_sold}")
-        print(f"Reward: {reward}")
+
+        if self.verbose == 1:
+            self.info("\033[H\033[J")
+            self.info(f"Step: {self.timesteps}")
+            self.info(f"Action: {action}")
+            self.info(f"Profit: {profit}")
+            self.info(f"Net worth: {self.net_worth}")
+            self.info(f"Max net worth: {self.max_net_worth}")
+            self.info(f"Shares held: {self.shares_held}")
+            self.info(f"Cost basis: {self.cost_basis}")
+            self.info(f"Total shares sold: {self.total_shares_sold}")
+            self.info(f"Reward: {reward}")
 
         if abs(profit) > self.initial_balance * self.worth_change_limit:
             reward += profit
 
         terminated: bool = bool(abs(
             profit) > self.initial_balance * self.worth_change_limit)
-        print(f"Terminated: {terminated}")
+        self.info(f"Terminated: {terminated}")
         truncated: bool = self.current_step >= len(
             self.df.loc[:, 'Open'].values)
-        print(f"Truncated: {truncated}")
+        self.info(f"Truncated: {truncated}")
 
         obs = self._next_observation()
 
@@ -154,8 +163,6 @@ class StockMarketEnv(gym.Env):
             'total_shares_sold': self.total_shares_sold,
             'total_sales_value': self.total_sales_value
         }
-        if truncated or terminated:
-            time.sleep(1)
 
         if self.current_step > len(self.df.loc[:, 'Open'].values) - 6:
             return obs, reward, True, truncated, info
@@ -170,14 +177,20 @@ class StockMarketEnv(gym.Env):
         self.cost_basis = 0
         self.total_shares_sold = 0
         self.total_sales_value = 0
+        self.worth_change_limit = 0.2
         self.profit_history = []
+        self.price_history = []
+        self.action_history = []
+        self.timesteps = 0
 
         # render
-        self.graph = None
+        self.renderer = None
 
         # Set the current step to a random point within the data frame
         self.current_step = random.randint(
             6, len(self.df['Open'].values) - 6)
+
+        self.debug("Current step reset:", self.current_step)
 
         observation = self._next_observation()
         return observation, {
@@ -191,34 +204,31 @@ class StockMarketEnv(gym.Env):
             'total_sales_value': self.total_sales_value
         }
 
-    def render(self, mode='human', close=False):
-        # Render the environment to the screen
-        # print(f'Step: {self.current_step}')
-        # print(f'Balance: {self.balance}')
-        # print(
-        #     f'Shares held: {self.shares_held} (Total sold: {self.total_shares_sold})')
-        # print(
-        #     f'Avg cost for held shares: {self.cost_basis} (Total sales value: {self.total_sales_value})')
-        # print(
-        #     f'Net worth: {self.net_worth} (Max net worth: {self.max_net_worth})')
-        # print(f'Profit: {self.profit_history[-1]}')
-
-        if self.graph == None:
-            x = np.arange(0, len(self.profit_history))
-            y = self.profit_history
-
-            self.graph = plt.plot(x, y)[0]
-            plt.pause(0.01)
+    def render(self, mode='human', close=False, interval=0.1):
+        if self.renderer is None:
+            self.renderer = Renderer(
+                window_size=100, profit_limit=self.initial_balance * self.worth_change_limit)
+            self.renderer.show()
         else:
-            # updating the data
-            x = np.arange(0, len(self.profit_history))
-            y = self.profit_history
+            self.renderer.update_profit(self.profit_history)
+            self.renderer.update_price(self.price_history)
+            self.renderer.update_action(self.action_history)
 
-            # removing the older graph
-            self.graph.remove()
+            self.renderer.draw_frame()
+            self.renderer.draw_profit()
+            self.renderer.draw_price()
+            self.renderer.draw_action()
 
-            # plotting newer graph
-            self.graph = plt.plot(x, y, color='g')[0]
+            self.renderer.pause(interval)
 
-            # calling pause function for 0.25 seconds
-            plt.pause(0.01)
+    def _log(self, args, type="info"):
+        if self.verbose == 1 and type == "info":
+            print(args)
+        if self.verbose == 2 and type == "debug":
+            print(args)
+
+    def info(self, *args):
+        self._log(args, "info")
+
+    def debug(self, *args):
+        self._log(args, "debug")

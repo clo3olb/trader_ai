@@ -9,13 +9,15 @@ from stable_baselines3.common.evaluation import evaluate_policy
 data_path = 'trader/dataset/AAPL.csv'
 data = pd.read_csv(data_path)
 data = data.dropna()
-# data = data.head(100)
 
-env = StockMarketEnv(data)
+
+env = StockMarketEnv(data, initial_balance=10000, verbose=2)
 check_env(env, warn=True)
 
+env.render()
+
 model = PPO("MlpPolicy", env, verbose=1, learning_rate=0.001)
-model.learn(total_timesteps=10000)
+model.learn(total_timesteps=1000)
 
 print("Saving model...")
 model.save("./trader/trade.pt")
