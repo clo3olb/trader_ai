@@ -8,6 +8,13 @@ symbols = [
     "XOM", "CVX", "COP", "SLB", "PSX",
 ]
 
+pct_change_columns = [ 
+    "Open",  "High",  "Low",  "Close",  "Volume",  
+    "SMA_10",  "SMA_50",  "SMA_100",  
+    "EMA_10",  "EMA_50",  "EMA_100",  
+    "VWAP"
+]
+
 
 def create_pct_change():
     dataset_path = "predictor/dataset/"
@@ -18,7 +25,7 @@ def create_pct_change():
         data = pd.read_csv(data_path)
 
         for column in data.columns:
-            if column != "Timestamp":
+            if column in pct_change_columns:
                 data[column] = data[column].pct_change()
 
         # remove first row
