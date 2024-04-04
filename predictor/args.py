@@ -3,7 +3,7 @@ import pickle
 
 
 def createSetting(args) -> str:
-    return '{}_{}'.format(args.model_id, args.data)
+    return '{}'.format(args.model_id)
 
 
 def getArgsPath(setting: str):
