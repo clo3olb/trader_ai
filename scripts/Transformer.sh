@@ -7,7 +7,7 @@ pred_len=96
 model_name=Transformer
 
 root_path_name=./predictor/dataset/
-data_path_name=$2.csv
+data_path_name=$2
 model_id_name=$1
 data_name=custom
 
