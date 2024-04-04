@@ -14,7 +14,7 @@
 # sh scripts/Transformer.sh Transformer_AAPL AAPL.csv 5
 
 
-# # AAPL_pct
+# # # AAPL_pct
 # sh scripts/PatchTST.sh PatchTST_AAPL_pct AAPL_pct 5
 # sh scripts/DLinear.sh DLinear_AAPL_pct AAPL_pct 5
 # sh scripts/Autoformer.sh Autoformer_AAPL_pct AAPL_pct 5
@@ -25,6 +25,7 @@ symbols=("MSFT" "AMZN" "GOOGL" "NFLX"
         "KO" "PG" "MCD" "DIS" "NKE"\
         "JNJ" "PFE" "MRK" "ABT" "BMY"\
         "XOM" "CVX" "COP" "SLB" "PSX")
+
 # other symbols
 for symbol in "${symbols[@]}"
 do
