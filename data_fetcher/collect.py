@@ -6,34 +6,40 @@ import pandas as pd
 # Load the environment variables from the .env file
 env_vars = dotenv_values("local.env")
 
+symbols = [
+    "AAPL", "MSFT", "AMZN", "GOOGL", "NFLX",
+    "JPM", "BAC", "C", "WFC", "GS",
+    "KO", "PG", "MCD", "DIS", "NKE",
+    "JNJ", "PFE", "MRK", "ABT", "BMY",
+    "XOM", "CVX", "COP", "SLB", "PSX",
+]
+
 
 def fetchMonthlyIntraday():
-    symbol = "AAPL"
-    interval = "1min"
-    start_date = "2022-01"
-    end_date = "2022-12"
-    api_key = env_vars['ALPHA_VANTAGE_API_KEY']
-    result_file = "data_fetcher/merged_data.csv"
+    for symbol in symbols:
+        interval = "15min"
+        start_date = "2022-01"
+        end_date = "2022-12"
+        api_key = env_vars['ALPHA_VANTAGE_API_KEY']
+        result_file = "./predictor/dataset/" + symbol + ".csv"
 
-    if os.path.exists(result_file):
-        os.remove(result_file)
+        print(f"{symbol} - Fetching...")
+        if os.path.exists(result_file):
+            # os.remove(result_file)
+            continue
 
-    months = getMonths(start_date, end_date)
+        months = getMonths(start_date, end_date)
 
-    for month in months:
-        createMergedCSV(symbol, interval, month, api_key, result_file)
+        for month in months:
+            createMergedCSV(symbol, interval, month, api_key, result_file)
+
+
+fetchMonthlyIntraday()
 
 
 def fetchHistoricalData():
     api_key = env_vars['ALPHA_VANTAGE_API_KEY']
 
-    symbols = [
-        "AAPL", "MSFT", "AMZN", "GOOGL", "NFLX",
-        "JPM", "BAC", "C", "WFC", "GS",
-        "KO", "PG", "MCD", "DIS", "NKE",
-        "JNJ", "PFE", "MRK", "ABT", "BMY",
-        "XOM", "CVX", "COP", "SLB", "PSX",
-    ]
     for symbol in symbols:
         result_file = f"predictor/dataset/{symbol}.csv"
         if os.path.exists(result_file):
@@ -51,8 +57,6 @@ def fetchHistoricalData():
         data.to_csv(result_file, mode='w', header=True, index=True)
         print(f"{symbol} - Done")
 
-
-fetchHistoricalData()
 
 """
 기술 기업:

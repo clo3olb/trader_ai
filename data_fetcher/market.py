@@ -297,6 +297,7 @@ def createMergedCSV(symbol: str, interval: str, month: str, api_key: str, result
 
     df.bfill(inplace=True)
     df.sort_values("Date", inplace=True)
+    df.rename(columns={"Date": "Timestamp"}, inplace=True)
 
     if not os.path.exists(result_file):
         df.to_csv(result_file, mode='w', header=True, index=False)
