@@ -1,0 +1,15 @@
+Args in experiment:
+Namespace(activation='gelu', affine=0, batch_size=256, c_out=7, d_ff=256, d_model=128, data='custom', data_path='JPM_pct.csv', date_header='Timestamp', dec_in=19, decoder_layers=1, decomposition=1, des='Exp', devices='0,1,2,3', distil=True, do_predict=False, dropout=0.2, e_layers=3, embed='timeF', embed_type=0, enc_in=19, factor=1, fc_dropout=0.2, features='M', freq='1d', gpu=0, head_dropout=0.0, individual=0, is_training=1, itr=1, kernel_size=25, label_len=48, learning_rate=0.0001, loss='mse', lradj='type3', model='PatchTST', model_id='PatchTST_JPM_pct_336_96', moving_avg=25, n_heads=16, num_workers=10, output_attention=False, padding_patch='end', patch_len=16, patience=20, pct_start=0.3, pred_len=96, random_seed=2024, result_path='./predictor/results/', revin=1, root_path='./predictor/dataset/', seq_len=336, stride=8, subtract_last=0, target='Close', test_flop=False, train_epochs=100, use_amp=False, use_gpu=True, use_multi_gpu=False)
+Use GPU: cuda:0
+>>>>>>>start training : PatchTST_JPM_pct_336_96>>>>>>>>>>>>>>>>>>>>>>>>>>
+train 8370
+val 1163
+test 2419
+Epoch: 1 cost time: 38.54267144203186
+Epoch: 1, Steps: 32 | Train Loss: 1.3552724 Vali Loss: 1.4103959 Test Loss: 0.9100437
+Validation loss decreased (inf --> 1.410396).  Saving model ...
+Updating learning rate to 0.0001
+Epoch: 2 cost time: 37.942596673965454
+Epoch: 2, Steps: 32 | Train Loss: 1.1876726 Vali Loss: 1.2205050 Test Loss: 0.7938494
+Validation loss decreased (1.410396 --> 1.220505).  Saving model ...
+Updating learning rate to 0.0001
