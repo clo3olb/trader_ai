@@ -52,3 +52,6 @@ mse:690738920685568.0, mae:8758142.0, rse:0.47022172808647156
 DLinear_AAPL_336_96_DLinear_custom_ftM_sl336_ll48_pl96_dm512_nh8_el2_dl1_df2048_fc1_ebtimeF_dtTrue_Exp_0  
 mse:830207111987200.0, mae:9274054.0, rse:0.515512228012085
 
+Transformer_sin_wave_336_96_custom  
+mse:27065392824320.0, mae:2006396.875, rse:0.1078670546412468
+
