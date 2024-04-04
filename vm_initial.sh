@@ -15,6 +15,6 @@ source trader_ai/bin/activate
 # install packages
 pip install -r requirements.txt
 
-
-
-
+# kill process
+ps -ef | grep -w "experiments"
+kill -9 8604
