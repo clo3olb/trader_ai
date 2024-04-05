@@ -1,0 +1,1 @@
+tensorboard --logdir trader/tensorboard
