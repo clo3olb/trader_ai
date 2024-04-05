@@ -25,10 +25,6 @@ def recreateData(data_path: str, cumprod: bool = False):
     if cumprod:
         starting_inputs = np.cumprod(input[:, 0] + 1, axis=0)
 
-    plt.plot(starting_inputs[:336])
-
-    plt.savefig(data_path + "starting_inputs.png")
-    
     for index in range(len(true)):
         if cumprod:
             input[index][0] = 0
@@ -39,8 +35,6 @@ def recreateData(data_path: str, cumprod: bool = False):
             input_data = input[index]
             true_data = true[index]
             pred_data = pred[index]
-
-        print(input_data[0])
 
         true_data = [input_data[i] for i in range(
             len(input_data))] + [true_data[i] for i in range(len(true_data))]
@@ -53,7 +47,7 @@ def recreateData(data_path: str, cumprod: bool = False):
     assert ground_truth[0][1] == ground_truth[1][0]
     return ground_truth, prediction
 
-def generateGIF(data_path: str, cumprod: bool = False):
+def generateGIF(symbol: str, data_path: str, cumprod: bool = False):
     # get npy file for pred and true
     ground_truth, prediction = recreateData(data_path, cumprod)
 
@@ -64,9 +58,9 @@ def generateGIF(data_path: str, cumprod: bool = False):
         os.system("rm -rf " + image_path)
     os.makedirs(image_path)
 
-    interval = 5
+    interval = 10
     start = int(len(ground_truth) * 0.0) + interval
-    end = int(len(ground_truth) * 0.01)
+    end = int(len(ground_truth) * 0.1)
 
     # Create a list to store the images
     images = []
@@ -74,15 +68,21 @@ def generateGIF(data_path: str, cumprod: bool = False):
     # Loop through each index with tqdm progress bar
     for index in tqdm(range(start, end, interval)):
 
-        plt.figure()
+        plt.figure(figsize=(10, 3))
 
         # Plot the true and predicted values for the current index
-        plt.plot(ground_truth[index], label="True", linewidth=1)
+        plt.plot(ground_truth[index], label="Ground Truth", linewidth=1, color="blue")
 
         for i in range(interval):
-            plt.plot(prediction[index - i], label=f"Pred {interval - i}", linewidth=1)
+            if i == 1:
+                plt.plot(prediction[index - i], label=f"Prediction", linewidth=1, color="orange")
+            else:
+                plt.plot(prediction[index - i], linewidth=1, label='_nolegend_', color="orange")
 
-        plt.title(f"Index: {index}")
+        if cumprod:
+            plt.title(f"{symbol} Close Price(Data from Cumulative Percentage)")
+        else:
+            plt.title(f"{symbol} Close Price")
         plt.legend(loc="upper left")
         plt.axvline(x=336, color='r', linestyle='--')
 
@@ -104,13 +104,39 @@ def generateGIF(data_path: str, cumprod: bool = False):
         os.system("rm -rf " + image_path)
 
 
+
+
 def getDataPath(model_id: str):
     return "./predictor/results/" + model_id + "/data/"
 
+def getSymbol(model_id: str):
+    return model_id.split("_")[1]
 
-# model_id = "PatchTST_AAPL_336_96"
-model_id = "PatchTST_AAPL_pct_336_96"
-data_path = getDataPath(model_id)
+def getModelId(symbol: str, cumprod: bool = False):
+    if cumprod:
+        return f"PatchTST_{symbol}_pct_336_96"
+    else:
+        return f"PatchTST_{symbol}_336_96"
 
-# generateGIF(data_path, False)
-generateGIF(data_path, True)
+def isCumulative(model_id: str):
+    return "pct" in model_id
+
+symbols = [
+    # "AAPL",
+    # "MSFT",
+    # "JPM",
+    # "BAC",
+    # "KO",
+    "PG",
+    # "JNJ",
+    # "PFE",
+    # "XOM",
+    # "CVX",
+]
+
+for symbol in symbols:
+    for cumprod in [ False]:
+        model_id = getModelId(symbol, cumprod)
+        data_path = getDataPath(model_id)
+        generateGIF(symbol, data_path, cumprod)
+        print(f"Generated GIF for {model_id}")
