@@ -4,13 +4,15 @@ import pandas as pd
 
 
 class Renderer:
-    def __init__(self, window_size=100, profit_limit=2000) -> None:
+    def __init__(self, window_size=100, profit_limit=2000, initial_balance=1000) -> None:
         self.figure, self.axes = plt.subplots(3, 1, figsize=(10, 8))
         self.figure.suptitle(
             'Stock Market Simulation')
         self.figure.subplots_adjust(hspace=0.2)
 
         self.window_size = window_size
+        self.initial_balance = initial_balance
+        self.profit_limit = profit_limit
 
         # profit
         self.axes[0].set_ylabel("Profit")
@@ -18,7 +20,6 @@ class Renderer:
             [0, 1, 2], [0, 100, 50], color='blue')[0]
         self.profit_x = []
         self.profit_y = []
-        self.profit_limit = profit_limit
         self.axes[0].set_ylim(-self.profit_limit, self.profit_limit)
         self.axes[0].set_xlim(0, 100)
 
@@ -169,4 +170,6 @@ class Renderer:
             ax=self.axes[2],
             width=0.9
         )
+        self.axes[2].axhline(y=self.initial_balance,
+                             color='red', linestyle='--')
         self.axes[2].get_xaxis().set_ticks([])

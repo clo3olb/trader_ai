@@ -15,13 +15,14 @@ MAX_SHARE_PRICE = 5000
 REWARD_SCALE = 1
 REWARD_ON_PROFIT_LIMIT_EXCEED = 500 * REWARD_SCALE
 REWARD_ON_LOSS_LIMIT_EXCEED = -500 * REWARD_SCALE
-REWARD_ON_NO_BALANCE = 0 * REWARD_SCALE
-REWARD_ON_NO_SHARES = 0 * REWARD_SCALE
+REWARD_ON_NO_BALANCE = -5 * REWARD_SCALE
+REWARD_ON_NO_SHARES = -6 * REWARD_SCALE
 
 REWARD_ON_HOLD = 0 * REWARD_SCALE
 REWARD_ON_EVERY_STEP = 0 * REWARD_SCALE
 
-TRADING_FEE = 0.03
+TRADING_FEE = 0.01
+MAX_STEPS = 20000
 
 
 class StockMarketEnv(gym.Env):
@@ -85,14 +86,14 @@ class StockMarketEnv(gym.Env):
         return random.uniform(self.df.loc[self.current_step, "Open"], self.df.loc[self.current_step, "Close"])
 
     def _interpret_action(self, action):
-        limit = 0.5
-        amount = abs(action) - limit
-        if action < -limit:
-            return "SELL", (-limit - action) / (1 - limit)
-        elif action > limit:
-            return "BUY", (action - limit) / (1 - limit)
-        else:
-            return "HOLD", 0
+        action_type = action[0]
+        amount = action[1]
+
+        if action_type < 1:
+            return "BUY", amount
+        elif action_type < 2:
+            return "HOLD", amount
+        return "SELL", amount
 
     def _take_action(self, action):
         # Set the current price to a random price within the time step
@@ -108,14 +109,12 @@ class StockMarketEnv(gym.Env):
                 self.action_history.append(0)
                 reward += REWARD_ON_NO_BALANCE
             else:
-                self.balance = self.balance * (1-TRADING_FEE)
-                total_possible = int(
-                    self.balance * (1 - TRADING_FEE) / current_price)
+                total_possible = int(self.balance / current_price)
                 shares_bought = int(total_possible * amount)
                 prev_cost = self.cost_basis * self.shares_held
                 additional_cost = shares_bought * current_price
 
-                self.balance -= additional_cost
+                self.balance -= additional_cost * (1+TRADING_FEE)
                 self.shares_held += shares_bought
                 if (self.shares_held) == 0:
                     self.cost_basis = 0
@@ -147,6 +146,8 @@ class StockMarketEnv(gym.Env):
 
         if self.shares_held == 0:
             self.cost_basis = 0
+
+        # reward = self.net_worth - self.initial_balance
 
         return reward
 
