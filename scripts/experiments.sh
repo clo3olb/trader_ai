@@ -9,17 +9,19 @@ set -e
 
 # # AAPL_pct
 # sh scripts/DLinear.sh DLinear_AAPL_pct AAPL_pct.csv 19
-sh scripts/Autoformer.sh Autoformer_AAPL_pct AAPL_pct.csv 18
-sh scripts/Transformer.sh Transformer_AAPL_pct AAPL_pct.csv 18
+# sh scripts/Autoformer.sh Autoformer_AAPL_pct AAPL_pct.csv 18
+# sh scripts/Transformer.sh Transformer_AAPL_pct AAPL_pct.csv 18
 
-symbols=("PG" \
-        "JNJ" "PFE" \
-        "XOM" "CVX" )
+# symbols=("AAPL" "BAC" "CVX" "JNJ" "KO" "MSFT" "PFE" "PG" "XOM")
 
-# other symbols
-for symbol in "${symbols[@]}"
-do
-    sh scripts/PatchTST.sh PatchTST_$symbol $symbol.csv 19
-    # sh scripts/PatchTST.sh PatchTST_${symbol}_pct ${symbol}_pct.csv 19
+# sh scripts/PatchTST.sh PatchTST_AAPL_without_sentiment AAPL_without_sentiment.csv 19
+sh scripts/PatchTST.sh PatchTST_AAPL_with_sentiment AAPL_with_sentiment.csv 20
 
-done
+sh scripts/PatchTST.sh PatchTST_BAC_without_sentiment BAC_without_sentiment.csv 19
+sh scripts/PatchTST.sh PatchTST_BAC_with_sentiment BAC_with_sentiment.csv 20
+
+sh scripts/PatchTST.sh PatchTST_CVX_without_sentiment CVX_without_sentiment.csv 19
+sh scripts/PatchTST.sh PatchTST_CVX_with_sentiment CVX_with_sentiment.csv 20
+
+sh scripts/PatchTST.sh PatchTST_JNJ_without_sentiment JNJ_without_sentiment.csv 19
+sh scripts/PatchTST.sh PatchTST_JNJ_with_sentiment JNJ_with_sentiment.csv 20
