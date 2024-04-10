@@ -141,7 +141,7 @@ symbols = [
 #         generateGIF(symbol, data_path, cumprod)
 #         print(f"Generated GIF for {model_id}")
 
-model_id = "PatchTST_AAPL_with_sentiment_336_96"
+model_id = "PatchTST_AAPL_with_correct_sentiment_336_96"
 data_path = getDataPath(model_id)
 generateGIF("AAPL", data_path, False)
 print(f"Generated GIF for {model_id}")

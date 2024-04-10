@@ -12,16 +12,28 @@ set -e
 # sh scripts/Autoformer.sh Autoformer_AAPL_pct AAPL_pct.csv 18
 # sh scripts/Transformer.sh Transformer_AAPL_pct AAPL_pct.csv 18
 
+sh scripts/Autoformer.sh Autoformer_AAPL_without_sentiment AAPL_without_sentiment.csv 18
+sh scripts/Autoformer.sh Autoformer_AAPL_with_sentiment AAPL_with_sentiment.csv 19
+sh scripts/Autoformer.sh Autoformer_AAPL_with_correct_sentiment AAPL_with_correct_sentiment.csv 19
+
+sh scripts/PatchTST.sh PatchTST_AAPL_without_sentiment AAPL_without_sentiment.csv 19
+sh scripts/PatchTST.sh PatchTST_AAPL_with_sentiment AAPL_with_sentiment.csv 20
+sh scripts/PatchTST.sh PatchTST_AAPL_with_correct_sentiment AAPL_with_correct_sentiment.csv 20
+
 # symbols=("AAPL" "BAC" "CVX" "JNJ" "KO" "MSFT" "PFE" "PG" "XOM")
 
 # sh scripts/PatchTST.sh PatchTST_AAPL_without_sentiment AAPL_without_sentiment.csv 19
-sh scripts/PatchTST.sh PatchTST_AAPL_with_sentiment AAPL_with_sentiment.csv 20
+# sh scripts/PatchTST.sh PatchTST_AAPL_with_sentiment AAPL_with_sentiment.csv 20
+# sh scripts/PatchTST.sh PatchTST_AAPL_with_correct_sentiment AAPL_with_correct_sentiment.csv 20
 
-sh scripts/PatchTST.sh PatchTST_BAC_without_sentiment BAC_without_sentiment.csv 19
-sh scripts/PatchTST.sh PatchTST_BAC_with_sentiment BAC_with_sentiment.csv 20
+# sh scripts/PatchTST.sh PatchTST_BAC_without_sentiment BAC_without_sentiment.csv 19
+# sh scripts/PatchTST.sh PatchTST_BAC_with_sentiment BAC_with_sentiment.csv 20
+# sh scripts/PatchTST.sh PatchTST_BAC_with_correct_sentiment BAC_with_correct_sentiment.csv 20
 
-sh scripts/PatchTST.sh PatchTST_CVX_without_sentiment CVX_without_sentiment.csv 19
-sh scripts/PatchTST.sh PatchTST_CVX_with_sentiment CVX_with_sentiment.csv 20
+# sh scripts/PatchTST.sh PatchTST_CVX_without_sentiment CVX_without_sentiment.csv 19
+# sh scripts/PatchTST.sh PatchTST_CVX_with_sentiment CVX_with_sentiment.csv 20
+# sh scripts/PatchTST.sh PatchTST_CVX_with_correct_sentiment CVX_with_correct_sentiment.csv 20
 
-sh scripts/PatchTST.sh PatchTST_JNJ_without_sentiment JNJ_without_sentiment.csv 19
-sh scripts/PatchTST.sh PatchTST_JNJ_with_sentiment JNJ_with_sentiment.csv 20
+# sh scripts/PatchTST.sh PatchTST_JNJ_without_sentiment JNJ_without_sentiment.csv 19
+# sh scripts/PatchTST.sh PatchTST_JNJ_with_sentiment JNJ_with_sentiment.csv 20
+# sh scripts/PatchTST.sh PatchTST_JNJ_with_correct_sentiment JNJ_with_correct_sentiment.csv 20
