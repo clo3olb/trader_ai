@@ -139,3 +139,36 @@ mse:6493196288.0, mae:7440.6337890625, rse:0.9441351294517517
 PatchTST_JNJ_with_sentiment_336_96  
 mse:6122655232.0, mae:6990.07177734375, rse:0.9417347311973572
 
+PatchTST_AAPL_with_correct_sentiment_336_96  
+mse:128771522560.0, mae:36217.32421875, rse:0.6607955694198608
+
+PatchTST_BAC_with_correct_sentiment_336_96  
+mse:57125076992.0, mae:31477.263671875, rse:0.8414034247398376
+
+PatchTST_CVX_with_correct_sentiment_336_96  
+mse:5557297664.0, mae:6749.63232421875, rse:0.9389598369598389
+
+PatchTST_JNJ_with_correct_sentiment_336_96  
+mse:6222861824.0, mae:7028.337890625, rse:0.9427255988121033
+
+Autoformer_AAPL_without_sentiment_336_96  
+mse:289218625536.0, mae:78471.1171875, rse:0.9651252627372742
+
+Autoformer_AAPL_without_sentiment_336_96  
+mse:289218625536.0, mae:78471.1171875, rse:0.9651252627372742
+
+Autoformer_AAPL_with_sentiment_336_96  
+mse:245417115648.0, mae:69054.390625, rse:0.9131118655204773
+
+Autoformer_AAPL_with_correct_sentiment_336_96  
+mse:272854450176.0, mae:73841.828125, rse:0.948677122592926
+
+PatchTST_AAPL_without_sentiment_336_96  
+mse:148863746048.0, mae:40298.1796875, rse:0.6924126744270325
+
+PatchTST_AAPL_with_sentiment_336_96  
+mse:147941998592.0, mae:38870.79296875, rse:0.7089527249336243
+
+PatchTST_AAPL_with_correct_sentiment_336_96  
+mse:117950070784.0, mae:34092.59765625, rse:0.6237377524375916
+
