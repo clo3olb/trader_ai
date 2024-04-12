@@ -173,3 +173,7 @@ class Renderer:
         self.axes[2].axhline(y=self.initial_balance,
                              color='red', linestyle='--')
         self.axes[2].get_xaxis().set_ticks([])
+
+    def close(self):
+        # remove all
+        plt.close()

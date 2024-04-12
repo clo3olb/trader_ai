@@ -7,7 +7,7 @@ def createSetting(args) -> str:
 
 
 def getArgsPath(setting: str):
-    return './predictor/results/{}/args.pkl'.format(setting)
+    return './results/{}/args.pkl'.format(setting)
 
 
 def saveArgs(setting: str, args):

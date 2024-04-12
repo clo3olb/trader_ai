@@ -5,12 +5,20 @@ import torch
 from exp.exp_main import Exp_Main
 import random
 import numpy as np
+import pandas as pd
 
 
-def predict(setting: str):
+def predict(model_id: str, data: pd.DataFrame):
 
     # load args
-    args = loadArgs(setting)
+    args = loadArgs(model_id)
+
+    data_path = "AAPL_pred_temp.csv"
+    args.root_path = './dataset/'
+    args.data_path = data_path
+    args.result_path = './results/'
+
+    data.to_csv(os.path.join(args.root_path, data_path), index=False)
 
     # random seed
     fix_seed = args.random_seed
@@ -18,10 +26,10 @@ def predict(setting: str):
     torch.manual_seed(fix_seed)
     np.random.seed(fix_seed)
 
-    # check GPU status and exit if not available
-    if not torch.cuda.is_available():
-        print('GPU is not available')
-        exit()
+    # # check GPU status and exit if not available
+    # if not torch.cuda.is_available():
+    #     print('GPU is not available')
+    #     exit()
 
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
 
@@ -33,20 +41,11 @@ def predict(setting: str):
 
     Exp = Exp_Main
 
-    # change data path to the one to predict
-    args.data_path = "AAPL_pred.csv"
-    args.date_header = 'Timestamp'
-
     exp = Exp(args)  # set experiments
     print(
-        '>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-    preds = exp.predict(setting, True)
+        '>>>>>>>predicting : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(model_id))
+    preds = exp.predict(model_id, True)
 
     torch.cuda.empty_cache()
 
     return preds
-
-
-setting = 'AAPL_336_96_PatchTST_custom_ftM_sl336_ll48_pl96_dm128_nh16_el3_dl1_df256_fc1_ebtimeF_dtTrue_Exp_0'
-preds = predict(setting)
-print(preds)

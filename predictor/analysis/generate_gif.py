@@ -6,6 +6,7 @@ from PIL import Image
 import os
 from tqdm import tqdm
 
+
 def recreateData(data_path: str, cumprod: bool = False):
     # get npy file for pred and true
     true = np.load(data_path + "true.npy")
@@ -43,9 +44,10 @@ def recreateData(data_path: str, cumprod: bool = False):
 
         ground_truth.append(true_data)
         prediction.append(pred_data)
-    
+
     assert ground_truth[0][1] == ground_truth[1][0]
     return ground_truth, prediction
+
 
 def generateGIF(symbol: str, data_path: str, cumprod: bool = False):
     # get npy file for pred and true
@@ -60,7 +62,7 @@ def generateGIF(symbol: str, data_path: str, cumprod: bool = False):
 
     interval = 10
     start = int(len(ground_truth) * 0.0) + interval
-    end = int(len(ground_truth) * 0.1)
+    end = int(len(ground_truth) * 1.0)
 
     # Create a list to store the images
     images = []
@@ -71,13 +73,16 @@ def generateGIF(symbol: str, data_path: str, cumprod: bool = False):
         plt.figure(figsize=(10, 3))
 
         # Plot the true and predicted values for the current index
-        plt.plot(ground_truth[index], label="Ground Truth", linewidth=1, color="blue")
+        plt.plot(ground_truth[index], label="Ground Truth",
+                 linewidth=1, color="blue")
 
         for i in range(interval):
             if i == 1:
-                plt.plot(prediction[index - i], label=f"Prediction", linewidth=1, color="orange")
+                plt.plot(
+                    prediction[index - i], label=f"Prediction", linewidth=1, color="orange")
             else:
-                plt.plot(prediction[index - i], linewidth=1, label='_nolegend_', color="orange")
+                plt.plot(prediction[index - i], linewidth=1,
+                         label='_nolegend_', color="orange")
 
         if cumprod:
             plt.title(f"{symbol} Close Price(Data from Cumulative Percentage)")
@@ -104,13 +109,13 @@ def generateGIF(symbol: str, data_path: str, cumprod: bool = False):
         os.system("rm -rf " + image_path)
 
 
-
-
 def getDataPath(model_id: str):
     return "./predictor/results/" + model_id + "/data/"
 
+
 def getSymbol(model_id: str):
     return model_id.split("_")[1]
+
 
 def getModelId(symbol: str, cumprod: bool = False):
     if cumprod:
@@ -118,16 +123,18 @@ def getModelId(symbol: str, cumprod: bool = False):
     else:
         return f"PatchTST_{symbol}_336_96"
 
+
 def isCumulative(model_id: str):
     return "pct" in model_id
 
+
 symbols = [
-    # "AAPL",
+    "AAPL",
     # "MSFT",
     # "JPM",
     # "BAC",
     # "KO",
-    "PG",
+    # "PG",
     # "JNJ",
     # "PFE",
     # "XOM",
@@ -141,7 +148,8 @@ symbols = [
 #         generateGIF(symbol, data_path, cumprod)
 #         print(f"Generated GIF for {model_id}")
 
-model_id = "PatchTST_AAPL_with_correct_sentiment_336_96"
+# model_id = "Autoformer_AAPL_336_96"
+model_id = "PatchTST_AAPL_336_96"
 data_path = getDataPath(model_id)
 generateGIF("AAPL", data_path, False)
 print(f"Generated GIF for {model_id}")

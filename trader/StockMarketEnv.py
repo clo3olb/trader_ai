@@ -13,15 +13,15 @@ MAX_NUM_SHARES = 7421640800
 MAX_SHARE_PRICE = 5000
 
 REWARD_SCALE = 1
-REWARD_ON_PROFIT_LIMIT_EXCEED = 500 * REWARD_SCALE
+REWARD_ON_PROFIT_LIMIT_EXCEED = 1500 * REWARD_SCALE
 REWARD_ON_LOSS_LIMIT_EXCEED = -500 * REWARD_SCALE
 REWARD_ON_NO_BALANCE = -5 * REWARD_SCALE
-REWARD_ON_NO_SHARES = -6 * REWARD_SCALE
+REWARD_ON_NO_SHARES = -5 * REWARD_SCALE
 
 REWARD_ON_HOLD = 0 * REWARD_SCALE
 REWARD_ON_EVERY_STEP = 0 * REWARD_SCALE
 
-TRADING_FEE = 0.01
+TRADING_FEE = 0.00
 MAX_STEPS = 20000
 
 
@@ -41,44 +41,31 @@ class StockMarketEnv(gym.Env):
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
-            low=0, high=1, shape=(len(df.columns) - 1, self.window_size + 1), dtype=np.float32)
+            low=np.array([-1 for i in range(window_size + 5)]), high=np.array([1 for i in range(window_size + 5)]), dtype=np.float32)
 
         self.total_timesteps = 0
+        self.renderer = None
 
     def _next_observation(self):
-        # Get the stock data points for the last 5 days and scale to between 0-1
-        frame = np.array([
-            self.df.loc[self.current_step - self.window_size: self.current_step -
-                        1, 'Open'].values / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step - self.window_size: self.current_step -
-                        1, 'High'].values / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step - self.window_size: self.current_step -
-                        1, 'Low'].values / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step - self.window_size: self.current_step -
-                        1, 'Close'].values / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step - self.window_size: self.current_step -
-                        1, 'Volume'].values / MAX_NUM_SHARES,
-        ])
+        # Get the stock market close price and min max scale within the observation space
+
+        prices = self.df.loc[self.current_step: self.current_step +
+                             self.window_size - 1, 'Close'].values
+        max_price = np.amax(prices)
+        min_price = np.amin(prices)
+
+        # min max scale and from -1 to 1
+        scaled_prices = (prices - min_price) / (max_price - min_price) * 2 - 1
 
         # Append additional data and scale each value to between 0-1
-        obs = np.append(frame,
-                        [[self.balance / MAX_ACCOUNT_BALANCE],
-                         [self.balance / self.net_worth],
-                         [self.max_net_worth / MAX_ACCOUNT_BALANCE],
-                         [self.cost_basis / MAX_SHARE_PRICE],
-                         #  [self.total_shares_sold / MAX_NUM_SHARES],
-                         [self.total_sales_value / (MAX_NUM_SHARES * MAX_SHARE_PRICE)]],
-                        axis=1)
 
-        # if any of the value larger than 1
-        for row in range(len(obs)):
-            for col in range(len(obs[row])):
-                if obs[row][col] > 1:
-                    self.info("Balance: ", self.balance)
-                    self.info("Max Net Worth: ", self.max_net_worth)
-                    self.info(obs)
-                    raise ValueError(
-                        f"Value at row {row} and col {col} is greater than 1, and timestep is {self.current_step}")
+        obs = np.append(scaled_prices, [
+            (self.balance / MAX_ACCOUNT_BALANCE) * 1,
+            (self.shares_held / MAX_NUM_SHARES) * 1,
+            (self.cost_basis / MAX_SHARE_PRICE) * 1,
+            (self.max_net_worth / MAX_ACCOUNT_BALANCE) * 1,
+            (self.total_sales_value / (MAX_NUM_SHARES * MAX_SHARE_PRICE)) * 1
+        ])
 
         return obs.astype(np.float32)
 
@@ -210,6 +197,10 @@ class StockMarketEnv(gym.Env):
         self.price_history = []
         self.action_history = []
         self.timesteps = 0
+
+        if self.renderer is not None:
+            self.renderer.close()
+            self.renderer = None
 
         # render
         self.renderer = None
