@@ -28,7 +28,7 @@ to reduce the size of the repository, I removed the following files:
 
 If you need the original files, please clone the git repository from the following link:
 ```bash
-git clone https://github.com/clo3olb/trader_ai
+git clone https://github.com/clo3olb/trader_ai.git
 ```
 
 
